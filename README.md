@@ -32,7 +32,7 @@ Let-Them-Cook/
 │   ├── models/               # DB models (like MongoDB)
 │   └── index.js              # Entry point for server
 │
-├── .gitignore
+├── .gitignore                # Other files like gitignore and readme
 ├── README.md
 ├── package.json
 └── LICENSE
