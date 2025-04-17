@@ -1,5 +1,7 @@
 # Let-Them-Cook
 
+Link to Status Reports: https://docs.google.com/document/d/1eTC_VSmyYSDE3__Ye2_9YM9x5vDOsuFFiBD-rr5rpxo/edit?usp=sharing
+
 ## Idea
 
 **Let-Them-Cook** is meant to be a revolutionary app to help users with the everyday struggle of cooking. Our goal is to be able to identify the best recipes for a users given ingredients and help them make the most of the food they have at home; we want users to be able to interact with an AI chatbot to help them efficiently make recipes/food based on the ingredients they have. We also plan to help users explore more cultures, recipes, and unique cooking experiences thanks to our propietary databases and unique AI.
