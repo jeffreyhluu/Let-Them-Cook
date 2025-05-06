@@ -1,7 +1,7 @@
 module.exports = {
     clearMocks: true,
   
-    testEnvironment: 'node',
+    testEnvironment: 'jsdom',
   
     // Match test files with .test.js or .spec.js
     testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)+(spec|test).js?(x)'],
@@ -17,6 +17,10 @@ module.exports = {
     // Add Babel transformation for JS and JSX files
     transform: {
       '^.+\\.[t|j]sx?$': 'babel-jest' // This will transform JS/JSX files using babel-jest
+    },
+
+    moduleNameMapper: {
+      '\\.css$': 'identity-obj-proxy'
     }
   };
   
