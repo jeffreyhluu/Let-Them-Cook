@@ -4,7 +4,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "jest -c jest.config.js --watch",
+    "test": "jest -c jest.config.js --ci",
     "eject": "react-scripts eject"
   },
   "dependencies": {
