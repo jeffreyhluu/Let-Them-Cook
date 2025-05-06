@@ -1,4 +1,3 @@
-// jest.config.js
 module.exports = {
     clearMocks: true,
   
@@ -12,6 +11,12 @@ module.exports = {
     collectCoverageFrom: ['src/**/*.{js,jsx}', '!src/**/*.test.js'],
   
     coverageDirectory: 'coverage',
-
-    setupFilesAfterEnv: ['<rootDir>/src/__tests__/setupTests.js']
-};
+  
+    setupFilesAfterEnv: ['<rootDir>/src/setupTests.js'],
+  
+    // Add Babel transformation for JS and JSX files
+    transform: {
+      '^.+\\.[t|j]sx?$': 'babel-jest' // This will transform JS/JSX files using babel-jest
+    }
+  };
+  
