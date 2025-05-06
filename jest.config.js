@@ -13,5 +13,5 @@ module.exports = {
   
     coverageDirectory: 'coverage',
 
-    setupFilesAfterEnv: ['src/__tests__/setupTests.js']
+    setupFilesAfterEnv: ['<rootDir>/src/__tests__/setupTests.js']
 };
