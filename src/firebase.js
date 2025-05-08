@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -28,6 +29,9 @@ try {
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
+// Initialize Firestore
+const db = getFirestore(app);
+
 // Helper function for user profile data
 const updateUserProfile = (user) => {
   if (user) {
@@ -41,4 +45,4 @@ const updateUserProfile = (user) => {
   return null;
 };
 
-export { auth, provider, updateUserProfile };
+export { auth, provider, db, updateUserProfile };

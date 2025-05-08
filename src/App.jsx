@@ -8,6 +8,7 @@ import NearestGroceryStore from './pages/NearestGroceryStore';
 import Reviews from './pages/Reviews';
 import Profile from './pages/Profile';
 import Login from './pages/Login';
+import TestPage from './pages/TestPage';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase'; // Adjust path as needed
 
@@ -40,6 +41,7 @@ const App = () => {
             <li><Link to="/nearest-grocery-store">Nearest Grocery Store</Link></li>
             <li><Link to="/reviews">Reviews</Link></li>
             <li><Link to="/profile">Profile</Link></li>
+            <li><Link to="/test-page">Test Page</Link></li>
             <li><button onClick={() => auth.signOut()}>Sign Out</button></li>
           </ul>
         </nav>
@@ -74,6 +76,10 @@ const App = () => {
           <Route 
             path="/profile" 
             element={user ? <Profile /> : <Navigate to="/" />} 
+          />
+          <Route 
+            path="/test-page" 
+            element={user ? <TestPage /> : <Navigate to="/" />} 
           />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
