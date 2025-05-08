@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { TextField, Button, Box, Paper, CircularProgress } from '@mui/material';
 import { Chat } from '@mui/icons-material';
+import { addRecipeToUser, addOrInitRecipeRating } from '../firestoreHelpers';
 import './Chatbot.css';  // Import the external CSS file
 
 const Chatbot = () => {
@@ -27,6 +28,7 @@ const Chatbot = () => {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const messageEndRef = useRef(null);
+  const [parsedRecipe, setParsedRecipe] = useState(null);
 
   const scrollToBottom = () => {
     const el = messageEndRef.current;
@@ -127,6 +129,18 @@ const Chatbot = () => {
         instructionsHTML += `<p>${instruction.trim()}</p>`;
       }
     });
+
+    setParsedRecipe({
+      recipeID: crypto.randomUUID(),
+      recipeName: recipeName,
+      ingredients,
+      instructions,
+      rating: 3, // default, or you could prompt the user
+      difficulty: parseInt(difficulty),
+      cuisineType: cuisine,
+      dietary: parseDietaryEnum(dietary),
+      saved: true
+    });
   
     return `
       <h2>${recipeName}</h2>
@@ -143,6 +157,17 @@ const Chatbot = () => {
       ${instructionsHTML}
     `;
   };
+
+  function parseDietaryEnum(value) {
+    const map = {
+      'gluten-free and dairy-free': 0,
+      'gluten-free': 1,
+      'dairy-free': 2,
+      'vegetarian': 4,
+      'vegan': 5
+    };
+    return map[value.toLowerCase()] ?? 3; // default fallback
+  }
   
   
   const handleKeyDown = (e) => {
@@ -193,6 +218,25 @@ const Chatbot = () => {
           {loading ? <CircularProgress size={24} color="inherit" /> : <Chat />}
         </Button>
       </Box>
+      {parsedRecipe && (
+        <Box mt={2} textAlign="center">
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={async () => {
+              const userId = 'some-user-id'; // Replace with actual user ID (e.g., from auth)
+              const name = 'Sample User';
+              const email = 'sample@example.com';
+
+              await addRecipeToUser(userId, parsedRecipe);
+              await addOrInitRecipeRating(parsedRecipe);
+              alert('Recipe saved!');
+            }}
+          >
+            Submit Recipe
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 };
