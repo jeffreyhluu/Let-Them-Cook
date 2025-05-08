@@ -8,9 +8,22 @@ const Chatbot = () => {
   const [messages, setMessages] = useState([
     {
       role: 'system',
-      content: 'You are a helpful AI recipe assistant. When a user enters ingredients, suggest a recipe using those items.'
+      content: `You are a helpful AI recipe assistant. When a user enters ingredients, suggest a recipe using those items.
+      
+      Additionally, generate a recipe name and provide the following metadata clearly at the top:
+  
+      Metadata:
+      Name: [recipe name]
+      Dietary: [category]
+      Cuisine: [type]
+      Difficulty: [level]
+  
+      Then, continue with the recipe as normal with "Ingredients" and "Instructions".
+  
+      Make sure to clearly distinguish between metadata, ingredients, and instructions.`
     }
   ]);
+  
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const messageEndRef = useRef(null);
@@ -71,47 +84,67 @@ const Chatbot = () => {
     return responseText.includes('Ingredients:') && responseText.includes('Instructions:');
   };
 
-  // Function to format recipe text into structured HTML
   const formatRecipe = (recipeText) => {
-    // Extract recipe name (we'll assume the name comes before "Ingredients:")
-    const nameMatch = recipeText.match(/^([^\n]+)\s*Ingredients:/);
-    const recipeName = nameMatch ? nameMatch[1].trim() : "Recipe Name Not Found";
-
-    // Extract ingredients and instructions
+    // If the response already contains HTML, assume it's already formatted
+    const isHTML = /<\/?[a-z][\s\S]*>/i.test(recipeText);
+    if (isHTML) {
+      return recipeText;
+    }
+  
+    // If it's plain text, parse it as before
+    const metadataMatch = recipeText.match(
+      /Metadata:\s*Name:\s*(.+?)\s*Dietary:\s*(.+?)\s*Cuisine:\s*(.+?)\s*Difficulty:\s*(.+?)\s*(?:\n|$)/i
+    );
+  
+    let recipeName = 'Not specified';
+    let dietary = 'Not specified';
+    let cuisine = 'Not specified';
+    let difficulty = 'Not specified';
+  
+    if (metadataMatch) {
+      recipeName = metadataMatch[1].trim();
+      dietary = metadataMatch[2].trim();
+      cuisine = metadataMatch[3].trim();
+      difficulty = metadataMatch[4].trim();
+    }
+  
     const ingredientsSection = recipeText.match(/Ingredients:([\s\S]*?)Instructions:/);
     const instructionsSection = recipeText.match(/Instructions:([\s\S]*)/);
-
-    // Ensure ingredients and instructions exist
+  
     const ingredients = ingredientsSection ? ingredientsSection[1].trim() : 'No ingredients provided.';
     const instructions = instructionsSection ? instructionsSection[1].trim() : 'No instructions provided.';
-
-    // Format ingredients into a list
+  
     let ingredientsHTML = '';
-    ingredients.split('\n').forEach(ingredient => {
-        if (ingredient.trim()) {
+    ingredients.split('\n').forEach((ingredient) => {
+      if (ingredient.trim()) {
         ingredientsHTML += `<li>${ingredient.trim()}</li>`;
-        }
+      }
     });
-    ingredientsHTML += '';
-
-    // Format instructions into simple text with line breaks (no bullets or numbers)
+  
     let instructionsHTML = '';
-    instructions.split('\n').forEach(instruction => {
-        if (instruction.trim()) {
-        instructionsHTML += `<p>${instruction.trim()}</p>`; // Each instruction in its own paragraph
-        }
+    instructions.split('\n').forEach((instruction) => {
+      if (instruction.trim()) {
+        instructionsHTML += `<p>${instruction.trim()}</p>`;
+      }
     });
-
-    // Return the formatted HTML with recipe name, ingredients, and instructions
+  
     return `
       <h2>${recipeName}</h2>
+      <h3>Metadata:</h3>
+      <ul>
+        <li><strong>Name:</strong> ${recipeName}</li>
+        <li><strong>Dietary:</strong> ${dietary}</li>
+        <li><strong>Cuisine:</strong> ${cuisine}</li>
+        <li><strong>Difficulty:</strong> ${difficulty}</li>
+      </ul>
       <h3>Ingredients:</h3>
-      ${ingredientsHTML}
+      <ul>${ingredientsHTML}</ul>
       <h3>Instructions:</h3>
       ${instructionsHTML}
     `;
   };
-
+  
+  
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') sendMessage();
   };
