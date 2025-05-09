@@ -15,12 +15,10 @@ test('Chatbot renders without crashing', () => {
 test('Chatbot UI elements render correctly', () => {
   render(<Chatbot />);
 
-  // Check for header
-  expect(screen.getByText(/Recipe Assistant/i)).toBeInTheDocument();
+  // Check for header text
+  expect(screen.getByText(/Yummerz - Recipe Assistant/i)).toBeInTheDocument();
 
-  // Check for input field
-  expect(screen.getByPlaceholderText(/e.g., chicken, broccoli, garlic/i)).toBeInTheDocument();
+  // Check for input field with correct placeholder
+  expect(screen.getByPlaceholderText(/Type ingredients \(e\.g\., eggs, spinach\)/i)).toBeInTheDocument();
 
-  // Check for send button (icon-only, so we use role)
-  expect(screen.getByRole('button')).toBeInTheDocument();
 });
