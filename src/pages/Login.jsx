@@ -24,7 +24,7 @@ const Login = () => {
   };
 
   return (
-    <div style={{ padding: "20px", maxWidth: "400px", margin: "0 auto" }}>
+    <div style={{ padding: "20px", maxWidth: "400px", margin: "0 auto", textAlign: "center" }}>
       <h1>Welcome to Let Them Cook</h1>
       <p>Please login to continue</p>
       
@@ -39,7 +39,8 @@ const Login = () => {
           color: "white",
           border: "none",
           borderRadius: "4px",
-          cursor: loading ? "default" : "pointer"
+          cursor: loading ? "default" : "pointer",
+          width: "100%", // Make the button take up the full width of the container
         }}
       >
         {loading ? "Logging in..." : "Login with Google"}

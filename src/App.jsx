@@ -34,20 +34,22 @@ const App = () => {
 
   return (
     <>
-      {user && (
+      {!user ? (
+        <Login />  // Show Login page if user is not logged in
+      ) : (
         <>
           {/* Navbar */}
           <nav className="navbar">
             <ul className="nav-links">
-            <li>
-            <Link to="/home">
-              <img 
-                src={logo} 
-                alt="Logo" 
-                className="logo" 
-              />
-            </Link>
-            </li>
+              <li>
+                <Link to="/home">
+                  <img 
+                    src={logo} 
+                    alt="Logo" 
+                    className="logo" 
+                  />
+                </Link>
+              </li>
               <li><Link to="/explore">Explore</Link></li>
               <li><Link to="/user-query">User Query</Link></li>
               <li><Link to="/nearest-grocery-store">Nearest Grocery Store</Link></li>
@@ -62,38 +64,14 @@ const App = () => {
 
           <main>
             <Routes>
-              <Route 
-                path="/" 
-                element={<Navigate to="/home" />} 
-              />
-              <Route 
-                path="/home" 
-                element={<Home />} 
-              />
-              <Route 
-                path="/explore" 
-                element={<Explore />} 
-              />
-              <Route 
-                path="/user-query" 
-                element={<UserQuery />} 
-              />
-              <Route 
-                path="/nearest-grocery-store" 
-                element={<NearestGroceryStore />} 
-              />
-              <Route 
-                path="/reviews" 
-                element={<Reviews />} 
-              />
-              <Route 
-                path="/profile" 
-                element={<Profile />} 
-              />
-              <Route 
-                path="/test-page" 
-                element={<TestPage />} 
-              />
+              <Route path="/" element={<Navigate to="/home" />} />
+              <Route path="/home" element={<Home />} />
+              <Route path="/explore" element={<Explore />} />
+              <Route path="/user-query" element={<UserQuery />} />
+              <Route path="/nearest-grocery-store" element={<NearestGroceryStore />} />
+              <Route path="/reviews" element={<Reviews />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/test-page" element={<TestPage />} />
               <Route path="*" element={<Navigate to="/home" />} />
             </Routes>
           </main>
