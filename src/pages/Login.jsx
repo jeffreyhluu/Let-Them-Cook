@@ -1,20 +1,20 @@
 import React, { useState } from "react";
-import { auth, provider } from "../firebase"; // Adjust path as needed
+import { auth, provider } from "../firebase";
 import { signInWithPopup } from "firebase/auth";
+import logo from "../assets/logo.png"; // Import your logo image
+import "./css/login.css";  // Import the login-specific CSS
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleGoogleLogin = async () => {
-    console.log("Login button clicked"); // Debug log
     setLoading(true);
     setError("");
-    
+
     try {
       const result = await signInWithPopup(auth, provider);
       console.log("Login successful:", result.user.displayName);
-      // No redirect needed here - App.jsx will handle it
     } catch (error) {
       console.error("Login error:", error);
       setError(`Login failed: ${error.message}`);
@@ -24,27 +24,29 @@ const Login = () => {
   };
 
   return (
-    <div style={{ padding: "20px", maxWidth: "400px", margin: "0 auto", textAlign: "center" }}>
-      <h1>Welcome to Let Them Cook</h1>
-      <p>Please login to continue</p>
-      
-      {error && <div style={{ color: "red" }}>{error}</div>}
-      
-      <button 
-        onClick={handleGoogleLogin} 
-        disabled={loading}
-        style={{
-          padding: "10px 20px",
-          background: "#4285F4",
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-          cursor: loading ? "default" : "pointer",
-          width: "100%", // Make the button take up the full width of the container
-        }}
-      >
-        {loading ? "Logging in..." : "Login with Google"}
-      </button>
+    <div className="full-page-gradient">
+      {/* Logo at the top left */}
+      <img src={logo} alt="Let Them Cook Logo" className="logo" />
+
+      <div className="login-card">
+        <h1>Welcome to Let Them Cook</h1>
+        <p>Please sign in for access to Yummerz, Recipes, and more!</p>
+
+        {error && <div className="text-red-600 text-sm mb-4">{error}</div>}
+
+        <button
+          onClick={handleGoogleLogin}
+          disabled={loading}
+          className="button"
+        >
+          <img
+            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+            alt="Google icon"
+            className="w-5 h-5"
+          />
+          {loading ? "Logging in..." : "Login with Google"}
+        </button>
+      </div>
     </div>
   );
 };

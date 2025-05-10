@@ -1,0 +1,128 @@
+/* Ensure html, body, and #root take up full height */
+html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Gradient animation for the background */
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+  /* Full-page gradient background */
+  .full-page-gradient {
+    background: linear-gradient(-45deg, #8E44AD, #F6D02F, #FF4C4C, #FFD700);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative; /* Ensure the logo can be positioned relative to the page */
+  }
+  
+  /* Position logo at the top-left */
+  .logo {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    z-index: 10; /* Ensure logo is above other elements */
+  }
+  
+  /* Login card style */
+  .login-card {
+    width: 100%;
+    max-width: 450px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    animation: fadeIn 1s ease;
+  }
+  
+  /* 3D text effect */
+  @keyframes textShadow {
+    0% {
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    }
+    50% {
+      text-shadow: 5px 5px 8px rgba(0, 0, 0, 0.3), 0 0 25px rgba(0, 0, 0, 0.3);
+    }
+    100% {
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    }
+  }
+  
+  /* Apply the 3D effect to the title */
+  h1 {
+    color: #FF4C4C;
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    animation: textShadow 3s infinite alternate;
+  }
+  
+  /* Paragraph style */
+  p {
+    font-size: 1.2rem;
+    color: #444;
+    line-height: 1.8;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+    margin-bottom: 2rem;
+  }
+  
+  /* Button style */
+  .button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    padding: 1rem;
+    background-color: #4285F4;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+  }
+  
+  .button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .button:hover {
+    background-color: #357ae8;
+  }
+  
+  /* Fade-in effect for login card */
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
