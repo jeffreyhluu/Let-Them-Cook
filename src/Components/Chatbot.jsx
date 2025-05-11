@@ -29,7 +29,6 @@ const Chatbot = () => {
       content: "Hi, I'm Yummerz, your personalized AI assistant! 🧑‍🍳 Please input ingredients so I can help you whip up something delicious."
     }
   ]);  
-  
 
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -82,7 +81,7 @@ const Chatbot = () => {
       if (isRecipe(responseText)) {
         const recipeObj = extractRecipeData(responseText);
         setParsedRecipe(recipeObj);
-        const formattedHTML = formatRecipe(recipeObj);
+        const formattedHTML = await formatRecipeWithRealLink(recipeObj);
         setMessages([...newMessages, { role: 'assistant', content: formattedHTML }]);
       } else {
         setMessages([...newMessages, { role: 'assistant', content: responseText }]);
@@ -122,13 +121,47 @@ const Chatbot = () => {
   const parseDietaryEnum = (v) => ({ 'gluten-free and dairy-free': 0, 'gluten-free': 1, 'dairy-free': 2, 'vegetarian': 4, 'vegan': 5 }[v.toLowerCase()] ?? 3);
   const getDietaryText = (v) => ({ 0: 'Gluten-free and dairy-free', 1: 'Gluten-free', 2: 'Dairy-free', 4: 'Vegetarian', 5: 'Vegan', 3: 'Not specified' }[v] ?? 'Not specified');
 
-  const formatRecipe = ({ recipeName, dietary, cuisineType, difficulty, ingredients, instructions }) => {
+  const getRealRecipeLink = async (ingredients) => {
+    try {
+      const response = await axios.get(
+        `https://api.spoonacular.com/recipes/findByIngredients`,
+        {
+          params: {
+            ingredients,
+            number: 1,
+            ranking: 1,
+            apiKey: process.env.REACT_APP_SPOONACULAR_API_KEY,
+          }
+        }
+      );
+  
+      const recipe = response.data[0];
+      if (!recipe?.id) return null;
+  
+      const info = await axios.get(`https://api.spoonacular.com/recipes/${recipe.id}/information`, {
+        params: {
+          apiKey: process.env.REACT_APP_SPOONACULAR_API_KEY,
+        }
+      });
+  
+      return info.data?.sourceUrl ?? null;
+  
+    } catch (err) {
+      console.error('Error fetching real recipe link:', err);
+      return null;
+    }
+  };
+  
+  const formatRecipeWithRealLink = async ({ recipeName, dietary, cuisineType, difficulty, ingredients, instructions }) => {
     const difficultyText = getDifficultyText(difficulty);
     const dietaryText = getDietaryText(dietary);
-
+  
     const ingredientsHTML = ingredients.split('\n').map(i => `<li>${i.trim()}</li>`).join('');
     const instructionsHTML = instructions.split('\n').map(i => `<p>${i.trim()}</p>`).join('');
-
+  
+    const recipeLink = await getRealRecipeLink(ingredients);
+  
+    // If a valid link is found, create a clickable hyperlink; otherwise, show a fallback message
     return `
       <div class="assistant-recipe">
         <h2>${recipeName}</h2>
@@ -143,9 +176,14 @@ const Chatbot = () => {
         <ul>${ingredientsHTML}</ul>
         <h3>Instructions:</h3>
         ${instructionsHTML}
+        ${
+          recipeLink
+            ? `<p><strong>If you would like a different recipe with some similiar ingredients, check out this link: <a href="${recipeLink}" target="_blank">${recipeLink}</a></strong><br /><em>(Note: This recipe may not include all the ingredients you provided.)</em></p>`
+            : '<p><strong>No real recipe link found for this dish.</strong></p>'
+        }
       </div>
     `;
-  };
+  };  
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') sendMessage();
