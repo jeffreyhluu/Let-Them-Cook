@@ -1,3 +1,5 @@
+Team Members: Dhruv Krishna Srinivasan, Anas Slassi, Ahmad Sorush, Jeffery Luu, Guadalupe Luna, Rodas Tekle
+
 # Let-Them-Cook
 
 Link to Status Reports: https://docs.google.com/document/d/1eTC_VSmyYSDE3__Ye2_9YM9x5vDOsuFFiBD-rr5rpxo/edit?usp=sharing
