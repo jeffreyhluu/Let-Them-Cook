@@ -8,6 +8,7 @@ import Reviews from './pages/Reviews';
 import Profile from './pages/Profile';
 import Login from './pages/Login';
 import TestPage from './pages/TestPage';
+import RecipeInstructions from './pages/RecipeInstructions';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase'; // Adjust path as needed
 import logo from './assets/logo.png';  
@@ -53,9 +54,7 @@ const App = () => {
               <li><Link to="/explore">Explore</Link></li>
               <li><Link to="/user-query">User Query</Link></li>
               <li><Link to="/nearest-grocery-store">Nearest Grocery Store</Link></li>
-              <li><Link to="/reviews">Reviews</Link></li>
               <li><Link to="/profile">Profile</Link></li>
-              <li><Link to="/test-page">Test Page</Link></li>
               <li>
                 <button className="sign-out-btn" onClick={() => auth.signOut()}>Sign Out</button>
               </li>
@@ -71,6 +70,7 @@ const App = () => {
               <Route path="/nearest-grocery-store" element={<NearestGroceryStore />} />
               <Route path="/reviews" element={<Reviews />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/recipe/:recipeID" element={<RecipeInstructions />} />
               <Route path="/test-page" element={<TestPage />} />
               <Route path="*" element={<Navigate to="/home" />} />
             </Routes>
