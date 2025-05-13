@@ -151,6 +151,29 @@ const Chatbot = () => {
       return null;
     }
   };
+
+  const generateImageURL = async (prompt) => {
+    try {
+      const response = await axios.post(
+        'https://api.openai.com/v1/images/generations',
+        {
+          prompt,
+          n: 1,
+          size: '256x256',
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
+          },
+        }
+      );
+      return response.data.data[0].url;
+    } catch (err) {
+      console.error("Image generation failed:", err);
+      return null;
+    }
+  };
   
   const formatRecipeWithRealLink = async ({ recipeName, dietary, cuisineType, difficulty, ingredients, instructions }) => {
     const difficultyText = getDifficultyText(difficulty);
@@ -249,8 +272,17 @@ const Chatbot = () => {
               if (!user) return alert("You must be logged in to submit a recipe.");
               const { uid, displayName, email } = user;
               await createOrUpdateUser(uid, displayName ?? 'Anonymous', email ?? 'unknown@example.com');
-              await addRecipeToUser(uid, parsedRecipe);
-              await addOrInitRecipeRating(parsedRecipe);
+
+              const prompt = `A top-down photo of a delicious dish called ${parsedRecipe.recipeName}.`;
+              const imageURL = await generateImageURL(prompt);
+
+              const recipeWithImage = {
+                ...parsedRecipe,
+                imageURL: imageURL ?? '',  // Store empty string if it fails
+              };
+
+              await addRecipeToUser(uid, recipeWithImage);
+              await addOrInitRecipeRating(recipeWithImage);
               alert('Recipe saved!');
             }}
           >
@@ -263,3 +295,5 @@ const Chatbot = () => {
 };
 
 export default Chatbot;
+
+
