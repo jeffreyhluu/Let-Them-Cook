@@ -152,25 +152,39 @@ const Chatbot = () => {
     }
   };
 
-  const generateImageURL = async (prompt) => {
+  const generateAndStoreImage = async (prompt, recipeID) => {
     try {
       const response = await axios.post(
-        'https://api.openai.com/v1/images/generations',
+        "https://api.openai.com/v1/images/generations",
         {
           prompt,
           n: 1,
-          size: '256x256',
+          size: "256x256",
         },
         {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
           },
         }
       );
-      return response.data.data[0].url;
+  
+      const imageUrl = response.data.data[0].url;
+  
+      // Download image as blob
+      const imageBlob = await axios.get(imageUrl, { responseType: 'blob' });
+  
+      // Upload to Firebase Storage
+      const storage = getStorage();
+      const imageRef = ref(storage, `recipes/${recipeID}.png`);
+      await uploadBytes(imageRef, imageBlob.data);
+  
+      // Get permanent download URL
+      const downloadURL = await getDownloadURL(imageRef);
+      return downloadURL;
+  
     } catch (err) {
-      console.error("Image generation failed:", err);
+      console.error("Failed to generate or upload image:", err);
       return null;
     }
   };
@@ -271,10 +285,11 @@ const Chatbot = () => {
               const user = auth.currentUser;
               if (!user) return alert("You must be logged in to submit a recipe.");
               const { uid, displayName, email } = user;
+
               await createOrUpdateUser(uid, displayName ?? 'Anonymous', email ?? 'unknown@example.com');
 
               const prompt = `A top-down photo of a delicious dish called ${parsedRecipe.recipeName}.`;
-              const imageURL = await generateImageURL(prompt);
+              const imageURL = await generateAndStoreImage(parsedRecipe, uid, prompt);
 
               const recipeWithImage = {
                 ...parsedRecipe,

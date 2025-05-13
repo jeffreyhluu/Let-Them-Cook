@@ -47,7 +47,7 @@ export async function addRecipeToUser(userId, recipe) {
 
   if (!userSnap.exists()) {
     // If no user document exists, create one with the new recipe
-    console.log("Going into if");
+    // console.log("Going into if");
     await setDoc(userRef, {
       name: recipe.name || 'Unknown',
       email: recipe.email || 'unknown@example.com',
@@ -55,7 +55,7 @@ export async function addRecipeToUser(userId, recipe) {
     });
   } else {
     // Retrieve the current recipes array and append the new recipe
-    console.log("going into else");
+    // console.log("going into else");
     // console.log("Initial recipes: " + recipes);
     console.log("Added recipe: " + recipe);
     await updateDoc(userRef, {
