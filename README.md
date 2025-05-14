@@ -14,7 +14,7 @@ Link to Status Reports: https://docs.google.com/document/d/1eTC_VSmyYSDE3__Ye2_9
 - Create chatbot for User to interact with
 - Create explore/recipes page for user to be able to learn more about different cuisines and foods
 
-## Layout of Repository
+## Layout of Repository AND Beta Release Details
 
 ```bash
 Let-Them-Cook/
