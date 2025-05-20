@@ -1,6 +1,4 @@
-# 🧑‍🍳 Let Them Cook — User Manual
-
-## 📌 High-Level Description
+# Let Them Cook — User Manual
 
 **Let Them Cook** is a web application designed to help users find recipes based on ingredients they already have and discover nearby grocery stores to purchase missing ingredients. The app features a smart chatbot assistant, personalized profile pages, recipe browsing via an Explore page, and user-friendly UI for seamless meal planning.
 
@@ -8,11 +6,11 @@ This project aims to make cooking more accessible and efficient, especially for 
 
 ---
 
-## 🧰 Installation Instructions
+## Installation Instructions
 
 To run **Let Them Cook** locally, follow these steps:
 
-### 🔧 Prerequisites
+### Prerequisites
 
 * **Node.js** (v18 or later)
 * **npm** (v9 or later)
@@ -22,7 +20,7 @@ To run **Let Them Cook** locally, follow these steps:
 * **Spoonacular API key** (for recipes)
 * **.env** file with secured keys
 
-### ↺ Setup
+### Setup
 
 1. **Clone the repository**
 
@@ -56,7 +54,7 @@ To run **Let Them Cook** locally, follow these steps:
 
 ---
 
-## 🚀 How to Run the App
+## How to Run the App
 
 1. **Start the Firebase emulator** (if using local authentication and DB testing)
 
@@ -74,9 +72,9 @@ To run **Let Them Cook** locally, follow these steps:
 
 ---
 
-## 🧽 How to Use the App
+## How to Use the App
 
-### ✅ Features
+### Features
 
 * **Login Page:** Sign in using Firebase authentication.
 * **Chatbot Page:** Ask the chatbot for recipe suggestions, missing ingredients, or nearby stores.
@@ -84,7 +82,7 @@ To run **Let Them Cook** locally, follow these steps:
 * **Explore Page:** Browse recipes fetched using the Spoonacular API.
 * **Profile Page:** Customize and view your saved preferences.
 
-### ⚠️ Work in Progress
+### Work in Progress
 
 * Image display for each recipe on the Explore Page.
 * Full review page functionality connected to the chatbot.
@@ -92,10 +90,10 @@ To run **Let Them Cook** locally, follow these steps:
 
 ---
 
-## 🐞 How to Report a Bug
+## How to Report a Bug
 
 Please report bugs through our GitHub issue tracker:
-🔗 [GitHub Issues](https://github.com/jeffreyhluu/Let-Them-Cook/issues)
+[GitHub Issues](https://github.com/jeffreyhluu/Let-Them-Cook/issues)
 
 When reporting a bug, include the following:
 
@@ -109,7 +107,7 @@ We also use a [bug report template](https://github.com/jeffreyhluu/Let-Them-Cook
 
 ---
 
-## 🧠 Known Bugs / Limitations
+## Known Bugs / Limitations
 
 Tracked bugs are listed in the [Issues](https://github.com/jeffreyhluu/Let-Them-Cook/issues) tab. Some current known limitations include:
 
