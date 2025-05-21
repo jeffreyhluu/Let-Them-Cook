@@ -11,6 +11,7 @@
 
 ## Layout of Directory Structure
 
+```bash
 Let-Them-Cook/
 ├── public/                   # Static files 
 │
@@ -30,6 +31,7 @@ Let-Them-Cook/
 ├── package.json
 ├── package-lock.json
 └── LICENSE
+```
 
 ---
 
