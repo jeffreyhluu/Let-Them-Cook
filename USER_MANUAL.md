@@ -18,7 +18,7 @@ To run **Let Them Cook** locally, follow these steps:
 * **Git**
 * **Google Maps API key** (for location features)
 * **Spoonacular API key** (for recipes)
-* * **OPEN AI API key** (for chatbot)
+* **OPEN AI API key** (for chatbot)
 * **.env** file with secured keys
 
 ### Setup
