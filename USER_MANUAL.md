@@ -52,8 +52,6 @@ To run **Let Them Cook** locally, follow these steps:
 
 To run **Let Them Cook** locally, use **two terminals** as described below:
 
----
-
 ### **Terminal 1: Start the React Frontend**
 
 ```bash
