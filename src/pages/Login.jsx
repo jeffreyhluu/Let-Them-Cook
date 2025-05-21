@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { auth, provider } from "../firebase"; // Adjust path as needed
 import { signInWithPopup } from "firebase/auth";
 
+
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -10,7 +11,7 @@ const Login = () => {
     console.log("Login button clicked"); // Debug log
     setLoading(true);
     setError("");
-    
+
     try {
       const result = await signInWithPopup(auth, provider);
       console.log("Login successful:", result.user.displayName);
@@ -27,11 +28,11 @@ const Login = () => {
     <div style={{ padding: "20px", maxWidth: "400px", margin: "0 auto" }}>
       <h1>Welcome to Let Them Cook</h1>
       <p>Please login to continue</p>
-      
+
       {error && <div style={{ color: "red" }}>{error}</div>}
-      
-      <button 
-        onClick={handleGoogleLogin} 
+
+      <button
+        onClick={handleGoogleLogin}
         disabled={loading}
         style={{
           padding: "10px 20px",
