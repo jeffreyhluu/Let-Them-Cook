@@ -78,3 +78,28 @@ export async function addOrInitRecipeRating(recipe) {
     });
   }
 }
+
+// Update a recipe
+export async function updateRecipeRatingForUser(userId, recipeID, newRating) {
+  const userRef = doc(db, USERS_COLLECTION, userId);
+  const userSnap = await getDoc(userRef);
+
+  if (!userSnap.exists()) {
+    throw new Error(`User with ID ${userId} does not exist.`);
+  }
+
+  const userData = userSnap.data();
+  const recipes = userData.recipes || [];
+
+  const updatedRecipes = recipes.map(recipe => {
+    if (recipe.recipeID === recipeID) {
+      return {
+        ...recipe,
+        rating: newRating
+      };
+    }
+    return recipe;
+  });
+
+  await updateDoc(userRef, { recipes: updatedRecipes });
+}
