@@ -31,73 +31,32 @@ Let-Them-Cook/
 ├── package-lock.json
 └── LICENSE
 
+---
+
 ## How to Build the Software
-
-1. **How to Build the **
-
-
-
----
-
-## How to Run the App
-
-1. **Start the Firebase emulator** (if using local authentication and DB testing)
-
-   ```bash
-   firebase emulators:start
-   ```
-
-2. **Run the React development server**
-
-   ```bash
-   npm start
-   ```
-
-3. Open `http://localhost:3000` in your browser.
+1. Clone the repository: git clone https://github.com/jeffreyhluu/Let-Them-Cook.git
+2. npm install
+No separate "build" for our app
 
 ---
 
-## How to Use the App
+## How to Test the Software
+In order to run all the tests, you can run the command:
+npm test
 
-### Features
-
-* **Login Page:** Sign in using Firebase authentication.
-* **Chatbot Page:** Ask the chatbot for recipe suggestions, missing ingredients, or nearby stores.
-* **Nearest Grocery Store:** Find grocery stores near your current location or via a ZIP code.
-* **Explore Page:** Browse recipes fetched using the Spoonacular API.
-* **Profile Page:** Customize and view your saved preferences.
-
-### Work in Progress
-
-* Image display for each recipe on the Explore Page.
-* Full review page functionality connected to the chatbot.
-* Store suggestions based on missing ingredients (future feature).
+In order to run 1 test (example: Chatbot.test.js), you can run the command:
+npm test Chatbot.test.js
 
 ---
 
-## How to Report a Bug
-
-Please report bugs through our GitHub issue tracker:
-[GitHub Issues](https://github.com/jeffreyhluu/Let-Them-Cook/issues)
-
-When reporting a bug, include the following:
-
-* **Steps to reproduce**
-* **Expected behavior**
-* **Actual behavior**
-* **Screenshots** (if applicable)
-* **Environment** (e.g., browser, device, OS)
-
-We also use a [bug report template](https://github.com/jeffreyhluu/Let-Them-Cook/issues/new?template=bug_report.md) to help guide your submission.
+## How to Add New Tests
+1. Add the new test file to the src/__tests__ folder.
+2. Make sure the test file suffix is ".test.js".
+3. Make sure the test file prefix helps the user identify what is being tested (like "Chatbot" in Chatbot.test.js).
 
 ---
 
-## Known Bugs / Limitations
-
-Tracked bugs are listed in the [Issues](https://github.com/jeffreyhluu/Let-Them-Cook/issues) tab. Some current known limitations include:
-
-* Incomplete recipe image integration.
-* Review page UI may not display correctly on small screens.
-* ZIP code fallback may fail if Google Maps location services are disabled.
-
-We aim to resolve these bugs in our next development sprint.
+## How to Build a Release of the Software
+All build tasks are automated with our app. When a developer does a "git push," Github Actions makes sure 
+the new push passes all tests and build requirements. As a sanity check, the developer should just make sure 
+that the Github Actions led to a successful build after their push.
