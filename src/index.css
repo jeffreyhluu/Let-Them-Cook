@@ -6,26 +6,33 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Inter', sans-serif;
-  background: linear-gradient(to right, #FF4C4C, #FFA500, #FFE135);
-  background-size: 300% 300%;
-  animation: backgroundShift 15s ease infinite;
+  background-color: #ffffff; /* White background for the whole page */
   color: #222;
   min-height: 100vh;
 }
 
-@keyframes backgroundShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* Proper gradient animation using background-position */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 nav {
-  background-color: #8E44AD; /* Grape purple */
   padding: 1rem 2rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   position: sticky;
   top: 0;
   z-index: 100;
+  background: linear-gradient(-45deg, #8E44AD, #F6D02F, #FF4C4C, #FFD700);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
 }
 
 nav ul {
@@ -52,22 +59,36 @@ nav ul li a:hover {
 }
 
 main {
-  max-width: 960px;
-  margin: 2rem auto;
+  width: 100%;
+  height: 100vh; /* Take up the entire viewport height */
+  margin: 0;
   padding: 2rem;
-  background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  background-color: #ffffff;
+  border-radius: 0;
+  box-shadow: none;
+  overflow-y: auto;
 }
 
 h1 {
-  color: #FF4C4C; /* Strawberry red */
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
+  color: #FF4C4C;
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
 }
 
 p {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   color: #444;
-  line-height: 1.6;
+  line-height: 1.8;
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
 }
+
+.bg-animated {
+  background: linear-gradient(-45deg, #8E44AD, #F6D02F, #FF4C4C, #FFD700);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+}
+
+

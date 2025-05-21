@@ -4,12 +4,7 @@ import Chatbot from '../Components/Chatbot';
 
 const Home = () => {
   return (
-    <div>
-      <h1>🍓 Welcome to Let Them Cook!</h1>
-      <p>
-        Explore flavors as fresh as fruit. Search for groceries, read reviews, and find your next
-        favorite meal adventure. 🍍🥝🍇
-      </p>
+    <div style={{ height: '100vh', margin: 0 }}>
       <Chatbot />
     </div>
   );

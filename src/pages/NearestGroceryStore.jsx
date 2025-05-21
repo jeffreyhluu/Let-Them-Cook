@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import './css/input.css';
 
 
 const NearestGroceryStore = () => {
@@ -36,7 +37,6 @@ const NearestGroceryStore = () => {
         `http://localhost:4000/api/nearby?lat=${location.lat}&lng=${location.lng}`
       );
       const data = await response.json();
-      console.log(data)
       setStores(data.results || []);
     } catch (err) {
       console.error("Error fetching stores:", err);
@@ -44,7 +44,6 @@ const NearestGroceryStore = () => {
     }
     setLoading(false);
   };
-
 
   const handleZipSubmit = async (e) => {
     e.preventDefault();
@@ -77,7 +76,7 @@ const NearestGroceryStore = () => {
   return (
     <div>
       <h1>Nearest Grocery Stores</h1>
-      {loading && <p>Loading stores...</p>}
+      {loading && <p className="loading">Loading stores...</p>}
 
       {!locationAllowed && (
         <form onSubmit={handleZipSubmit}>
@@ -97,14 +96,26 @@ const NearestGroceryStore = () => {
       )}
 
       {stores.length > 0 && (
-        <ul>
-        {stores.map((store, index) => (
-          <li key={index}>
-            <strong>{store.name}</strong> <br />
-            {store.vicinity}
-          </li>
-        ))}
-        </ul>
+        <div className="table-container">
+          <table className="stores-table">
+            <thead>
+              <tr>
+                <th>Store Name</th>
+                <th>Address</th>
+                <th>Rating</th>
+              </tr>
+            </thead>
+            <tbody>
+              {stores.map((store, index) => (
+                <tr key={index}>
+                  <td>{store.name}</td>
+                  <td>{store.vicinity}</td>
+                  <td>{store.rating ? store.rating : "N/A"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
       {!loading && stores.length === 0 && locationAllowed !== null && (
       <p>No grocery stores found for this location.</p>
