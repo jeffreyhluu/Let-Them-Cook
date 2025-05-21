@@ -1,20 +1,42 @@
 import React, { useState } from "react";
-import { auth, provider } from "../firebase";
+import { auth, provider } from "../firebase"; // Adjust path as needed
 import { signInWithPopup } from "firebase/auth";
-import logo from "../assets/logo.png"; // Import your logo image
-import "./css/login.css";  // Import the login-specific CSS
+
+const Spinner = () => (
+  <div style={{
+    border: "4px solid #f3f3f3",
+    borderTop: "4px solid #4285F4",
+    borderRadius: "50%",
+    width: "24px",
+    height: "24px",
+    animation: "spin 1s linear infinite",
+    margin: "10px auto"
+  }}/>
+);
+
+
+if (typeof document !== "undefined" && !document.getElementById("spinner-style")) {
+  const style = document.createElement("style");
+  style.id = "spinner-style";
+  style.innerHTML = spinnerStyle;
+  document.head.appendChild(style);
+}
+
+
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleGoogleLogin = async () => {
+    console.log("Login button clicked"); // Debug log
     setLoading(true);
     setError("");
 
     try {
       const result = await signInWithPopup(auth, provider);
       console.log("Login successful:", result.user.displayName);
+      // No redirect needed here - App.jsx will handle it
     } catch (error) {
       console.error("Login error:", error);
       setError(`Login failed: ${error.message}`);
@@ -24,29 +46,33 @@ const Login = () => {
   };
 
   return (
-    <div className="full-page-gradient">
-      {/* Logo at the top left */}
-      <img src={logo} alt="Let Them Cook Logo" className="logo" />
+    <div style={{ padding: "20px", maxWidth: "400px", margin: "0 auto" }}>
+      <h1>Welcome to Let Them Cook</h1>
+      <p>Please login to continue</p>
 
-      <div className="login-card">
-        <h1>Welcome to Let Them Cook</h1>
-        <p>Please sign in for access to Yummerz, Recipes, and more!</p>
+      {error && <div style={{ color: "red" }}>{error}</div>}
 
-        {error && <div className="text-red-600 text-sm mb-4">{error}</div>}
-
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleGoogleLogin();
+        }}
+      >
         <button
-          onClick={handleGoogleLogin}
+          type="submit"
           disabled={loading}
-          className="button"
+          style={{
+            padding: "10px 20px",
+            background: "#4285F4",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: loading ? "default" : "pointer"
+          }}
         >
-          <img
-            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-            alt="Google icon"
-            className="w-5 h-5"
-          />
           {loading ? "Logging in..." : "Login with Google"}
         </button>
-      </div>
+      </form>
     </div>
   );
 };
