@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import './css/input.css';
 
+
 const NearestGroceryStore = () => {
   const [locationAllowed, setLocationAllowed] = useState(null);
   const [zipCode, setZipCode] = useState("");
   const [stores, setStores] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [zipError, setZipError] = useState("");
+
 
   useEffect(() => {
     const confirmed = window.confirm(
@@ -44,27 +47,31 @@ const NearestGroceryStore = () => {
 
   const handleZipSubmit = async (e) => {
     e.preventDefault();
-    if (zipCode.trim() !== "") {
-      setLoading(true);
-      try {
-        const response = await fetch(
-          `https://maps.googleapis.com/maps/api/geocode/json?address=${zipCode}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`
-        );
-        const data = await response.json();
-        if (data.results && data.results[0]) {
-          const location = data.results[0].geometry.location;
-          fetchStores(location);
-        } else {
-          setStores([]);
-          setLoading(false);
-        }
-      } catch (err) {
-        console.error("Error fetching location:", err);
+    if (!/^\d{5}$/.test(zipCode)) {
+      setZipError("Please enter a valid 5-digit ZIP code.");
+      return;
+    }
+    setZipError("");
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${zipCode}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`
+      );
+      const data = await response.json();
+      if (data.results && data.results[0]) {
+        const location = data.results[0].geometry.location;
+        fetchStores(location);
+      } else {
         setStores([]);
         setLoading(false);
       }
+    } catch (err) {
+      console.error("Error fetching location:", err);
+      setStores([]);
+      setLoading(false);
     }
   };
+
 
   return (
     <div>
@@ -83,6 +90,7 @@ const NearestGroceryStore = () => {
               required
             />
           </label>
+          {zipError && <p style={{ color: "red" }}>{zipError}</p>}
           <button type="submit">Find Stores</button>
         </form>
       )}
@@ -108,6 +116,9 @@ const NearestGroceryStore = () => {
             </tbody>
           </table>
         </div>
+      )}
+      {!loading && stores.length === 0 && locationAllowed !== null && (
+      <p>No grocery stores found for this location.</p>
       )}
     </div>
   );

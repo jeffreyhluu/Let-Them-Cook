@@ -18,14 +18,22 @@ Link to Status Reports: https://docs.google.com/document/d/1eTC_VSmyYSDE3__Ye2_9
 
 ```bash
 Let-Them-Cook/
-├── public/                   # Static files 
+├── public/                   # Static files
 │
 ├── src/                      # Main source code
 │   ├── assets/               # Images, fonts, etc.
 │   ├── __tests__             # Unit tests and UI tests
 │   ├── Components/           # Reusable UI components, Chatbot logic and interface
 │   ├── pages/                # Page-level components (e.g. Home, Explore, Recipe)
+<<<<<<< HEAD
+│   ├── chatbot/              # Chatbot logic and interface
+│   ├── api/                  # API calls or backend integration, most likely Chat GPT API
+│   ├── data/                 # Local JSON or sample data to test
+│   ├── styles/               # Style themes
+│   └── App.jsx               # Main app
+=======
 │   └── App.jsx               # Main app 
+>>>>>>> 06b8580716888bf5889e40fd4c660242bec4822b
 │
 ├── server/                   # Not sure about this section, we may or may not use our own backend (potentially thinking of firestore) ->            temporary for Nearest Grocery Store
 │   ├── node_modules          # Necessary modules
@@ -37,6 +45,10 @@ Let-Them-Cook/
 ├── package-lock.json
 └── LICENSE
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> 06b8580716888bf5889e40fd4c660242bec4822b
 # ***************************************** Build, Run, and Test Instructions (Beta Release) *********************************************
 # Make sure the followings are installed:
 #  - Node.js (v18 or higher)
@@ -53,10 +65,15 @@ REACT_APP_FIREBASE_API_KEY=your-firebase-key
 # 1) First install the dependencies by running the command:
 npm install
 
+<<<<<<< HEAD
+
+# 2) Then, start the development server by running the command:
+=======
 #2) In one terminal, cd into the server folder, and run the command:
 node server.js
 
 # 3) Then, in a separate terminal in the base Let Them Cook folder, start the app by running the command:
+>>>>>>> 06b8580716888bf5889e40fd4c660242bec4822b
 npm start
 
 # The app will be running on the http://localhost:3000
@@ -65,6 +82,13 @@ npm start
 
 # - The recipe chatbot
 
+<<<<<<< HEAD
+# - Nearest grocery store locator
+
+# - Firebase-based login and profile functionality
+
+# ***** TO RUN TESTS ******
+=======
 # - The Explore page
 
 # - Nearest grocery store locator
@@ -72,6 +96,7 @@ npm start
 # - Firebase-based login 
 
 # ***** TO TEST/BUILD THE SYSTEM AND RUN TESTS ******
+>>>>>>> 06b8580716888bf5889e40fd4c660242bec4822b
 # For testing, we are using jest and @testing-library/react for component and logic testing.
 # Our test files are located in:
 /src/__tests__/
@@ -79,6 +104,36 @@ npm start
 # In order to run the tests, you can run the command:
 npm test
 
+<<<<<<< HEAD
+# We have all of the core features covered (e.g., Chatbot, Profile page, routing logic).
+# Our GitHub Actions is set up to run tests automatically on push.
+
+
+# Operational Use Case (Beta Release)
+#  We currently have one full user flow that works end-to-end where the user tells the chatbot what ingredients they have → the app recommends recipes → if something is missing, it shows the nearest grocery stores.
+
+# Here’s what that flow looks like behind the scenes:
+
+# 1. The user types their available ingredients into the chatbot on the home page.
+# 2. Our app uses the OpenAI API to generate recipes that match what they have.
+# 3. It checks for any missing ingredients from the recommended recipes.
+# 4. If there are missing ingredients, the app uses the Google Maps API to display the 5 closest grocery stores near the user.
+# 5. The user can explore more recipe options or save them using Firebase auth and Firestore.
+
+# This use case covers all the core parts of our system:
+# - React frontend (Chatbot.jsx, NearestGroceryStore.jsx, Profile.jsx)
+# - API integration (OpenAI + Google Maps)
+# - Firebase for login and saving user-specific data
+# - State management and routing
+
+
+
+
+
+
+
+
+=======
 # We have all of the core features covered (e.g., Chatbot, Explore page, routing logic).
 # Our GitHub Actions is set up to run tests automatically on each push.
 
@@ -107,3 +162,4 @@ npm test
 # - Firebase + Firestore for login and saving user-specific data
 # - State management and routing
 # - Github Actions for automated testing (all tests are run on each push)
+>>>>>>> 06b8580716888bf5889e40fd4c660242bec4822b

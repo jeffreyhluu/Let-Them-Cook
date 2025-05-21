@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { auth, provider } from "../firebase"; // Adjust path as needed
 import { signInWithPopup } from "firebase/auth";
 
+// Spinner component (keep if you want the spinner feature)
 const Spinner = () => (
   <div style={{
     border: "4px solid #f3f3f3",
@@ -14,6 +15,12 @@ const Spinner = () => (
   }}/>
 );
 
+// Spinner animation style (needed if using Spinner)
+const spinnerStyle = `
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+`;
 
 if (typeof document !== "undefined" && !document.getElementById("spinner-style")) {
   const style = document.createElement("style");
@@ -21,8 +28,6 @@ if (typeof document !== "undefined" && !document.getElementById("spinner-style")
   style.innerHTML = spinnerStyle;
   document.head.appendChild(style);
 }
-
-
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -70,7 +75,7 @@ const Login = () => {
             cursor: loading ? "default" : "pointer"
           }}
         >
-          {loading ? "Logging in..." : "Login with Google"}
+          {loading ? <Spinner /> : "Login with Google"}
         </button>
       </form>
     </div>
