@@ -18,6 +18,7 @@ To run **Let Them Cook** locally, follow these steps:
 * **Git**
 * **Google Maps API key** (for location features)
 * **Spoonacular API key** (for recipes)
+* **OPEN AI API key** (for chatbot)
 * **.env** file with secured keys
 
 ### Setup
@@ -35,40 +36,38 @@ To run **Let Them Cook** locally, follow these steps:
    npm install
    ```
 
-3. **Set up Firebase Emulator (for local testing)**
 
-   ```bash
-   npm install -g firebase-tools
-   firebase login
-   firebase init emulators
-   ```
-
-4. **Configure `.env` file**
+3. **Configure `.env` file**
    Create a `.env` file in the root directory with the following keys:
 
    ```
-   REACT_APP_FIREBASE_API_KEY=your_firebase_key
    REACT_APP_MAPS_API_KEY=your_google_maps_key
    REACT_APP_SPOONACULAR_API_KEY=your_spoonacular_key
+   REACT_APP_OPENAI_API_KEY=your_open_ai_key
    ```
 
 ---
 
 ## How to Run the App
 
-1. **Start the Firebase emulator** (if using local authentication and DB testing)
+To run **Let Them Cook** locally, use **two terminals** as described below:
 
-   ```bash
-   firebase emulators:start
-   ```
+### **Terminal 1: Start the React Frontend**
 
-2. **Run the React development server**
+```bash
+npm install
+npm start
+```
 
-   ```bash
-   npm start
-   ```
+This will start the React Development server.
+Visit. the app at: http://localhost:3000.
 
-3. Open `http://localhost:3000` in your browser.
+### **Terminal 2: Start the Backend Server**
+
+```bash
+cd server
+node server.js
+```
 
 ---
 
