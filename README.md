@@ -23,9 +23,8 @@ Let-Them-Cook/
 ├── src/                      # Main source code
 │   ├── assets/               # Images, fonts, etc.
 │   ├── __tests__             # Unit tests and UI tests
-│   ├── Components/           # Reusable UI components
+│   ├── Components/           # Reusable UI components, Chatbot logic and interface
 │   ├── pages/                # Page-level components (e.g. Home, Explore, Recipe)
-│   ├── chatbot/              # Chatbot logic and interface
 │   └── App.jsx               # Main app 
 │
 ├── server/                   # Not sure about this section, we may or may not use our own backend (potentially thinking of firestore) ->            temporary for Nearest Grocery Store
