@@ -6,10 +6,16 @@ import { addRecipeToUser, addOrInitRecipeRating, createOrUpdateUser } from '../f
 import { auth, db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import './Chatbot.css';
+import NearestGroceryStore from '../pages/NearestGroceryStore'; // Adjust path as needed
+import { Modal, Typography } from '@mui/material';
+import { IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+
 
 const Chatbot = () => {
   const [userName, setUserName] = useState('');
   const [userDietary, setUserDietary] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
 
   const [messages, setMessages] = useState([]);
 
@@ -285,6 +291,52 @@ const Chatbot = () => {
           {loading ? <CircularProgress size={24} color="inherit" /> : <Chat />}
         </Button>
       </Box>
+      <Button 
+  variant="outlined" 
+  color="secondary" 
+  onClick={() => setModalOpen(true)}
+  style={{ margin: '10px 0' }}
+>
+  Find Nearest Grocery Stores
+</Button>
+<Modal
+  open={modalOpen}
+  onClose={() => setModalOpen(false)}
+  aria-labelledby="nearest-grocery-modal-title"
+  aria-describedby="nearest-grocery-modal-description"
+  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+>
+  <Paper 
+    style={{ 
+      position: 'relative',  // Make sure relative positioning is set for absolute child
+      width: '90%', 
+      maxWidth: 600, 
+      maxHeight: '80vh', 
+      overflowY: 'auto', 
+      padding: 20 
+    }}
+  >
+    {/* X button */}
+    <IconButton
+      onClick={() => setModalOpen(false)}
+      style={{ 
+        position: 'absolute', 
+        top: 8, 
+        right: 8 
+      }}
+      aria-label="close"
+      size="large"
+    >
+      <CloseIcon />
+    </IconButton>
+
+    <Typography id="nearest-grocery-modal-title" variant="h6" gutterBottom>
+      Nearest Grocery Stores
+    </Typography>
+    <NearestGroceryStore />
+  </Paper>
+</Modal>
+
 
       {parsedRecipe && (
         <Box mt={2} textAlign="center">
