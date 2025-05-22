@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import Flag from "react-world-flags";
 import unFlag from "../assets/un-flag.png";
 import axios from "axios";
+import { updateRecipeRatingForUser } from "../firestoreHelpers";
 import './css/Explore.css';
 
 const cuisineToFlag = {
@@ -25,7 +26,7 @@ const cuisineToFlag = {
 const Explore = () => {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [recipeImages, setRecipeImages] = useState({});
+  const [userRatings, setUserRatings] = useState({});
 
   const fetchImageForRecipe = async (recipeName) => {
     try {
@@ -136,6 +137,35 @@ const Explore = () => {
     return cuisineToFlag[cuisine] || "custom";
   };
 
+  const handleRatingChange = (recipeID, newRating) => {
+    setUserRatings((prev) => ({
+      ...prev,
+      [recipeID]: newRating,
+    }));
+  };
+
+  const handleRatingSubmit = async (recipeID) => {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      alert("You must be logged in to rate recipes.");
+      return;
+    }
+
+    const newRating = userRatings[recipeID];
+    if (!newRating) return;
+
+    try {
+      await updateRecipeRatingForUser(currentUser.uid, recipeID, Number(newRating));
+      alert("Rating submitted!");
+      setRecipes((prev) =>
+        prev.map((r) => r.recipeID === recipeID ? { ...r, rating: Number(newRating) } : r)
+      );
+    } catch (error) {
+      console.error("Error submitting rating:", error);
+      alert("Failed to submit rating.");
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -174,6 +204,21 @@ const Explore = () => {
               </p>
               <p><strong>Difficulty:</strong> {getDifficultyText(recipe.difficulty)}</p>
               <p><strong>Rating:</strong> {renderStars(recipe.rating)}</p>
+            </div>
+            <div className="rating-input">
+              <label>
+                Rate this recipe:
+                <select
+                  value={userRatings[recipe.recipeID] || ""}
+                  onChange={(e) => handleRatingChange(recipe.recipeID, e.target.value)}
+                >
+                  <option value="">--</option>
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <option key={n} value={n}>{n}</option>
+                  ))}
+                </select>
+              </label>
+              <button onClick={() => handleRatingSubmit(recipe.recipeID)}>Submit</button>
             </div>
           </div>
         ))
