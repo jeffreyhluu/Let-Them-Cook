@@ -23,7 +23,7 @@ jest.mock("firebase/firestore", () => {
       data: () => ({
         displayName: "Ahmad Test",
         dietaryRestrictions: "Vegetarian",
-        shoppingList: "Milk, Eggs",
+        currIngredients: "Milk, Eggs",
         photoURL: "https://example.com/photo.jpg",
       }),
     })),
@@ -38,7 +38,7 @@ describe("Profile Component", () => {
     expect(screen.getByText(/User Profile/i)).toBeInTheDocument();
     expect(screen.getByText(/Profile Information/i)).toBeInTheDocument();
     expect(screen.getByText(/Dietary Restrictions/i)).toBeInTheDocument();
-    expect(screen.getByText(/Shopping List/i)).toBeInTheDocument();
+    expect(screen.getByText(/Current Ingredients/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /save/i })).toBeInTheDocument();
 
     // Wait for async data to load and verify profile data rendered

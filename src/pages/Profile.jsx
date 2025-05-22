@@ -8,7 +8,7 @@ import './css/input.css';
 const Profile = () => {
  const [displayName, setDisplayName] = useState("");
  const [dietaryRestrictions, setDietaryRestrictions] = useState("");
- const [shoppingList, setShoppingList] = useState("");
+ const [currIngredients, setCurrIngredients] = useState("");
  const [photoURL, setPhotoURL] = useState("");
  const [selectedImage, setSelectedImage] = useState(null);
 
@@ -24,7 +24,7 @@ const Profile = () => {
          const data = docSnap.data();
          setDisplayName(data.displayName || "");
          setDietaryRestrictions(data.dietaryRestrictions || "");
-         setShoppingList(data.shoppingList || "");
+         setCurrIngredients(data.currIngredients || "");
          setPhotoURL(data.photoURL || "");
        }
      });
@@ -58,7 +58,7 @@ const Profile = () => {
    await setDoc(userRef, {
      displayName,
      dietaryRestrictions,
-     shoppingList,
+     currIngredients,
      photoURL: updatedPhotoURL
    });
 
@@ -107,14 +107,14 @@ const Profile = () => {
      </section>
 
 
-     {/* Shopping List */}
+     {/* Current Ingredients */}
      <section className="profile-section">
-       <h2 className="section-title">Shopping List</h2>
+       <h2 className="section-title">Current Ingredients</h2>
        <textarea
          className="textarea"
          rows={4}
-         value={shoppingList}
-         onChange={(e) => setShoppingList(e.target.value)}
+         value={currIngredients}
+         onChange={(e) => setCurrIngredients(e.target.value)}
          placeholder="E.g., Milk, Eggs, Bread..."
        />
      </section>
