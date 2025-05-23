@@ -1,4 +1,4 @@
-Team Members: Dhruv Krishna Srinivasan, Anas Slassi, Ahmad Sorush, Jeffery Luu, Guadalupe Luna, Rodas Tekle
+Team Members: Dhruv Krishna Srinivasan, Anas Slassi, Ahmad Sorush, Jeffrey Luu, Guadalupe Luna, Rodas Tekle
 
 # Let-Them-Cook
 
