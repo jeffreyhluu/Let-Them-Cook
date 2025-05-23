@@ -6,10 +6,18 @@ import { addRecipeToUser, addOrInitRecipeRating, createOrUpdateUser } from '../f
 import { auth, db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import './Chatbot.css';
+import NearestGroceryStore from '../pages/NearestGroceryStore'; // Adjust path as needed
+import { Modal, Typography } from '@mui/material';
+import { IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+
 
 const Chatbot = () => {
   const [userName, setUserName] = useState('');
   const [userDietary, setUserDietary] = useState('');
+  const [currIngredients, setCurrIngredients] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [missingIngredients, setMissingIngredients] = useState([]);
 
   const [messages, setMessages] = useState([]);
 
@@ -30,6 +38,7 @@ const Chatbot = () => {
           const data = userSnap.data();
           setUserName(data.displayName || 'there');
           setUserDietary(data.dietaryRestrictions || 'none');
+          setCurrIngredients(data.currIngredients || []);
         } else {
           setUserName('there');
           setUserDietary('none');
@@ -196,6 +205,73 @@ const Chatbot = () => {
     }
   };
 
+  const getMissingIngredients = async () => {
+    if (!parsedRecipe || !currIngredients) return [];
+  
+    // Extract and normalize ingredients from recipe
+    const recipeIngs = parsedRecipe.ingredients
+      .split('\n')
+      .map(ing => ing.trim().toLowerCase())
+      .filter(Boolean);
+  
+    // Normalize user's current ingredients
+    const userIngs = currIngredients.map(ing => ing.toLowerCase());
+  
+    // Find missing ingredients
+    const missing = recipeIngs.filter(ing => !userIngs.includes(ing));
+  
+    if (missing.length === 0) return [];
+  
+    // Create prompt for GPT with missing ingredients to get price estimates
+    const prompt = `
+    Provide a price estimate in USD for each of these ingredients, in the format:
+    Ingredient: $X.XX
+  
+    Ingredients:
+    ${missing.join('\n')}
+    `;
+  
+    try {
+      const response = await axios.post(
+        'https://api.openai.com/v1/chat/completions',
+        {
+          model: 'gpt-3.5-turbo',
+          messages: [
+            { role: 'system', content: 'You provide estimated average prices in USD for grocery items.' },
+            { role: 'user', content: prompt }
+          ],
+          temperature: 0.5,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
+            'Content-Type': 'application/json',
+          }
+        }
+      );
+  
+      const gptReply = response.data.choices[0].message.content;
+  
+      // Parse prices from GPT reply
+      const prices = missing.map(ing => {
+        const regex = new RegExp(`${ing}[:\\s]*\\$?(\\d+(\\.\\d{1,2})?)`, 'i');
+        const match = gptReply.match(regex);
+        return {
+          ingredient: ing,
+          price: match ? parseFloat(match[1]) : null,
+        };
+      });
+  
+      return prices; // Array of { ingredient, price } for missing ingredients
+  
+    } catch (error) {
+      console.error('Failed to fetch ingredient prices:', error);
+      // Return missing without prices as fallback
+      return missing.map(ing => ({ ingredient: ing, price: null }));
+    }
+  };
+  
+
   const generateAndStoreImage = async (prompt, recipeID) => {
     // Your existing implementation here
   };
@@ -235,6 +311,16 @@ const Chatbot = () => {
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') sendMessage();
   };
+
+
+  useEffect(() => {
+    const fetchMissingIngredients = async () => {
+      const prices = await getMissingIngredients();
+      setMissingIngredients(prices);
+    };
+  
+    fetchMissingIngredients();
+  }, [parsedRecipe, currIngredients]);
 
   return (
     <Box className="chatbot-container">
@@ -285,6 +371,52 @@ const Chatbot = () => {
           {loading ? <CircularProgress size={24} color="inherit" /> : <Chat />}
         </Button>
       </Box>
+      <Button 
+  variant="outlined" 
+  color="secondary" 
+  onClick={() => setModalOpen(true)}
+  style={{ margin: '10px 0' }}
+>
+  Find Nearest Grocery Stores
+</Button>
+<Modal
+  open={modalOpen}
+  onClose={() => setModalOpen(false)}
+  aria-labelledby="nearest-grocery-modal-title"
+  aria-describedby="nearest-grocery-modal-description"
+  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+>
+  <Paper 
+    style={{ 
+      position: 'relative',  // Make sure relative positioning is set for absolute child
+      width: '90%', 
+      maxWidth: 600, 
+      maxHeight: '80vh', 
+      overflowY: 'auto', 
+      padding: 20 
+    }}
+  >
+    {/* X button */}
+    <IconButton
+      onClick={() => setModalOpen(false)}
+      style={{ 
+        position: 'absolute', 
+        top: 8, 
+        right: 8 
+      }}
+      aria-label="close"
+      size="large"
+    >
+      <CloseIcon />
+    </IconButton>
+
+    <Typography id="nearest-grocery-modal-title" variant="h6" gutterBottom>
+      Nearest Grocery Stores
+    </Typography>
+    <NearestGroceryStore missingIngredients={missingIngredients} />
+  </Paper>
+</Modal>
+
 
       {parsedRecipe && (
         <Box mt={2} textAlign="center">
