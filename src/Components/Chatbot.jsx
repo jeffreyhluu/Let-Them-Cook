@@ -4,9 +4,8 @@ import {
   TextField, Button, Box, Paper, CircularProgress,
   Modal, Typography, IconButton
 } from '@mui/material';
-import { Chat } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
-import { addRecipeToUser, addOrInitRecipeRating, createOrUpdateUser } from '../firestoreHelpers';
+import { addRecipeToUser, addOrInitRecipeRating, createOrUpdateUser, getAllUserRecipes, userHasRecipe, copyRecipeToUser, getUserIDByRecipeID } from '../firestoreHelpers';
 import { auth, db, storage } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { ref, uploadString, getDownloadURL } from 'firebase/storage';
@@ -25,6 +24,8 @@ const Chatbot = () => {
   const messageEndRef = useRef(null);
   const inputRef = useRef();
   const [parsedRecipe, setParsedRecipe] = useState(null);
+  const [matchedExistingRecipe, setMatchedExistingRecipe] = useState(null);
+  const [oldIdentification, setOldIdentification] = useState(null);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -86,6 +87,55 @@ const Chatbot = () => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+
+  // Attempting to find similar recipe  
+  async function checkForSimilarRecipe(userPrompt) {
+    const allRecipes = await getAllUserRecipes();
+    const summaries = allRecipes.map(recipe => ({
+      recipeID: recipe.recipeID,
+      summary: recipe.recipeSummary || `${recipe.recipeName}: ${recipe.ingredients}`,
+    }));
+  
+    const similarityPrompt = `
+  You're an assistant that compares a user's ingredient prompt to a list of existing recipes.
+  Return only the recipeID of the most similar recipe (with just the number, no surrounding text), or "none" if no similar match is found. Here is an example for 
+  what counts as a similar recipe: if a recipeName has eggs and spinach and the user inputs just eggs, the recipe should not be similar. 
+  However, if a recipe has strawberry and cream, and the user inputs strawberry and cream, the recipe should be similar. If a recipe has strawberry, then 
+  input of completely different fruits should not be similar.
+
+  
+  User Input:
+  ${userPrompt}
+  
+  Existing Recipes:
+  ${JSON.stringify(summaries, null, 2)}
+    `.trim();
+  
+    try {
+      const response = await axios.post(
+        "https://api.openai.com/v1/chat/completions",
+        {
+          model: "gpt-3.5-turbo",
+          messages: [{ role: "user", content: similarityPrompt }],
+          temperature: 0.3,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
+          },
+        }
+      );
+  
+      const result = response.data.choices?.[0]?.message?.content?.trim();
+      return result && result !== "none" ? result : null;
+  
+    } catch (error) {
+      console.error("Similarity check error:", error);
+      return null;
+    }
+  }
+  
   const sendMessage = async () => {
     if (!input.trim()) return;
 
@@ -96,7 +146,46 @@ const Chatbot = () => {
     setLoading(true);
 
     try {
-      const payloadMessages = [messages[0], userMessage];
+      const similarID = await checkForSimilarRecipe(input);
+      console.log("Similar ID: " + similarID);
+      if (similarID) {
+        const allRecipes = await getAllUserRecipes();
+        const matchedRecipe = allRecipes.find(r => r.recipeID === similarID); // Double check step to make sure OpenAI did not hallucinate
+        console.log("Matched recipe: " + matchedRecipe);
+        if (matchedRecipe) {
+          console.log("Matched recipe: " + matchedRecipe);
+          const currentUser = auth.currentUser;
+          if (currentUser) {
+            const hasRecipe = await userHasRecipe(currentUser.uid, similarID);
+            if (hasRecipe) {
+              setMessages(prev => [...prev, {
+                role: 'assistant',
+                content: `You already saved a similar recipe called "${matchedRecipe.recipeName}"!`,
+              }]);
+              setMatchedExistingRecipe(null);
+              setParsedRecipe(null);
+            } else {
+              setMessages(prev => [...prev, {
+                role: 'assistant',
+                content: `Here's a recipe I found that's very similar from another user:\n\n${matchedRecipe.recipeName}. Click "Save This Recipe" to save it on your explore page too!`,
+              }]);
+              setMatchedExistingRecipe(matchedRecipe);
+              setParsedRecipe(null);
+              const oldID = await getUserIDByRecipeID(similarID);
+              setOldIdentification(oldID);
+            }
+            setLoading(false);
+            return;
+          } else {
+            console.error("User not being identified");
+          }
+        }
+      }
+
+      const payloadMessages = [
+        messages.find(m => m.role === 'system'), 
+        userMessage
+      ];
       const response = await axios.post(
         'https://api.openai.com/v1/chat/completions',
         {
@@ -113,21 +202,24 @@ const Chatbot = () => {
 
       const responseText = response.data.choices[0].message.content;
 
-      if (isRecipe(responseText)) {
-        const recipeObj = extractRecipeData(responseText);
-        setParsedRecipe(recipeObj);
-        const formattedHTML = await formatRecipeWithRealLink(recipeObj);
-        setMessages([...newMessages, { role: 'assistant', content: formattedHTML }]);
-      } else {
-        setMessages([...newMessages, { role: 'assistant', content: responseText }]);
+      if (!isRecipe(responseText)) {
+        setMessages([...newMessages, { role: 'assistant', content: 'Sorry, I couldn’t format this as a full recipe. Try again!' }]);
+        return;
       }
+
+      const recipeObj = extractRecipeData(responseText);
+      setParsedRecipe(recipeObj);
+      setMatchedExistingRecipe(null);
+      const formattedHTML = await formatRecipeWithRealLink(recipeObj);
+      setMessages([...newMessages, { role: 'assistant', content: formattedHTML }]);
+
     } catch (err) {
       console.error('Chatbot error:', err);
       setMessages([...newMessages, { role: 'assistant', content: 'Sorry, I had a problem fetching a recipe. Try again!' }]);
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   const isRecipe = (text) => text.includes('Ingredients:') && text.includes('Instructions:');
 
@@ -337,15 +429,6 @@ const Chatbot = () => {
           onKeyDown={handleKeyDown}
           className="input-field"
         />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={sendMessage}
-          disabled={loading}
-          className="send-button"
-        >
-          {loading ? <CircularProgress size={24} color="inherit" /> : <Chat />}
-        </Button>
       </Box>
 
       <Button
@@ -379,28 +462,62 @@ const Chatbot = () => {
         </Paper>
       </Modal>
 
-      {parsedRecipe && (
-        <Box mt={2} textAlign="center">
+      <Box mt={2} textAlign="center">
+        {matchedExistingRecipe && (
           <Button
-            variant="contained"
-            color="secondary"
+            variant="outlined"
+            color="primary"
+            className="save-existing-button"
             onClick={async () => {
-              const user = auth.currentUser;
-              if (!user) return alert("You must be logged in to submit a recipe.");
-              const { uid, displayName, email } = user;
-              await createOrUpdateUser(uid, displayName ?? 'Anonymous', email ?? 'unknown@example.com');
-              const prompt = `A top-down photo of a delicious dish called ${parsedRecipe.recipeName}.`;
-              const imageURL = await generateAndStoreImage(prompt, parsedRecipe.recipeID);
-              const recipeWithImage = { ...parsedRecipe, imageURL: imageURL ?? '' };
-              await addRecipeToUser(uid, recipeWithImage);
-              await addOrInitRecipeRating(recipeWithImage);
-              alert('Recipe saved!');
+              const currentUser = auth.currentUser;
+              if (currentUser) {
+                const userRef = doc(db, 'UsersCollection', currentUser.uid);
+                console.log("Old ID: " + oldIdentification);
+                await copyRecipeToUser(oldIdentification, currentUser.uid, matchedExistingRecipe.recipeID);
+                setMessages(prev => [...prev, {
+                  role: 'assistant',
+                  content: `Recipe "${matchedExistingRecipe.recipeName}" has been saved to your Explore page!`
+                }]);
+                setMatchedExistingRecipe(null);
+              }
             }}
           >
-            Submit Recipe
+            Save this recipe
           </Button>
-        </Box>
-      )}
+        )}
+
+        {parsedRecipe && (
+          <>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={async () => {
+                setLoading(true);
+                try {
+                  const user = auth.currentUser;
+                  if (!user) return alert("You must be logged in to submit a recipe.");
+                  const { uid, displayName, email } = user;
+                  await createOrUpdateUser(uid, displayName ?? 'Anonymous', email ?? 'unknown@example.com');
+                  const prompt = `A top-down photo of a delicious dish called ${parsedRecipe.recipeName}.`;
+                  const imageURL = await generateAndStoreImage(prompt, parsedRecipe.recipeID);
+                  const recipeWithImage = { ...parsedRecipe, imageURL: imageURL ?? '' };
+                  await addRecipeToUser(uid, recipeWithImage);
+                  await addOrInitRecipeRating(recipeWithImage);
+                  alert('Recipe saved!');
+                } catch (err) {
+                  console.error("Submission failed", err);
+                  alert("There was an error submitting the recipe.");
+                } finally {
+                  setLoading(false);
+                }
+              }}
+            >
+              {loading ? <CircularProgress size={24} color="inherit" /> : "Submit Recipe"}
+            </Button>
+          </>
+        )}
+      </Box>
+      
     </Box>
   );
 };
