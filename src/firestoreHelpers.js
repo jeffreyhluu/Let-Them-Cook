@@ -4,12 +4,116 @@ import {
   getDoc,
   setDoc,
   updateDoc,
-  arrayUnion
+  arrayUnion,
+  collection,
+  getDocs
 } from 'firebase/firestore';
 import { db } from './firebase';
 
 const USERS_COLLECTION = 'UsersCollection';
 const RECIPE_RATINGS_COLLECTION = 'RecipeRatingsCollection';
+
+// Get all recipes from users collection
+// Get all user-submitted recipes, including the originating userId
+export async function getAllUserRecipes() {
+  const usersSnapshot = await getDocs(collection(db, USERS_COLLECTION));
+  const allRecipes = [];
+
+  usersSnapshot.forEach(userDoc => {
+    const userId = userDoc.id;
+    const userData = userDoc.data();
+
+    const userRecipes = userData.recipes || [];
+    userRecipes.forEach(recipe => {
+      allRecipes.push({
+        ...recipe,
+        userId // attach originating userId
+      });
+    });
+  });
+
+  return allRecipes;
+}
+
+// Get all recipes from ratings collection
+export async function getAllRatedRecipes() {
+  const ratingsSnapshot = await getDocs(collection(db, RECIPE_RATINGS_COLLECTION));
+  const recipes = [];
+
+  ratingsSnapshot.forEach(doc => {
+    const data = doc.data();
+    recipes.push(data);
+  });
+
+  return recipes;
+}
+
+// Check if user has a recipe
+export async function userHasRecipe(userId, recipeID) {
+  const userData = await getUserData(userId);
+  if (!userData || !userData.recipes) return false;
+
+  return userData.recipes.some(recipe => recipe.recipeID === recipeID);
+}
+
+/**
+ * Finds the userID of the user who owns the recipe with the given recipeID.
+ * @param {string} recipeID - The ID of the recipe to search for.
+ * @returns {Promise<string|null>} - The userID if found, otherwise null.
+ */
+export async function getUserIDByRecipeID(recipeID) {
+  try {
+    const usersSnapshot = await getDocs(collection(db, "UsersCollection"));
+
+    for (const userDoc of usersSnapshot.docs) {
+      const userID = userDoc.id;
+      const userData = userDoc.data();
+
+      const recipes = userData.recipes || [];
+
+      // If recipes is an array of objects with a recipeID field
+      const hasRecipe = recipes.some(recipe => recipe.recipeID === recipeID);
+
+      if (hasRecipe) {
+        return userID;
+      }
+    }
+
+    return null; // Recipe not found
+  } catch (error) {
+    console.error("Error getting user by recipe ID:", error);
+    return null;
+  }
+}
+
+// Copy a recipe from one user to another
+export async function copyRecipeToUser(fromUserId, toUserId, recipeID) {
+  const fromUserRef = doc(db, USERS_COLLECTION, fromUserId);
+  const toUserRef = doc(db, USERS_COLLECTION, toUserId);
+
+  const fromUserSnap = await getDoc(fromUserRef);
+  const toUserSnap = await getDoc(toUserRef);
+
+  if (!fromUserSnap.exists()) {
+    throw new Error(`Source user with ID ${fromUserId} does not exist.`);
+  }
+
+  if (!toUserSnap.exists()) {
+    throw new Error(`Destination user with ID ${toUserId} does not exist.`);
+  }
+
+  const fromUserData = fromUserSnap.data();
+  const recipeToCopy = fromUserData.recipes?.find(r => r.recipeID === recipeID);
+
+  if (!recipeToCopy) {
+    throw new Error(`Recipe with ID ${recipeID} not found for user ${fromUserId}.`);
+  }
+
+  await updateDoc(toUserRef, {
+    recipes: arrayUnion(recipeToCopy)
+  });
+}
+
 
 // Get user data
 export async function getUserData(userId) {
