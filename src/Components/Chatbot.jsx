@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { TextField, Button, Box, Paper, CircularProgress } from '@mui/material';
+import {
+  TextField, Button, Box, Paper, CircularProgress,
+  Modal, Typography, IconButton
+} from '@mui/material';
 import { Chat } from '@mui/icons-material';
-import { addRecipeToUser, addOrInitRecipeRating, createOrUpdateUser } from '../firestoreHelpers';
-import { auth, db } from '../firebase';
-import { doc, getDoc } from 'firebase/firestore';
-import './Chatbot.css';
-import NearestGroceryStore from '../pages/NearestGroceryStore'; // Adjust path as needed
-import { Modal, Typography } from '@mui/material';
-import { IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-
+import { addRecipeToUser, addOrInitRecipeRating, createOrUpdateUser } from '../firestoreHelpers';
+import { auth, db, storage } from '../firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import { ref, uploadString, getDownloadURL } from 'firebase/storage';
+import './Chatbot.css';
+import NearestGroceryStore from '../pages/NearestGroceryStore';
 
 const Chatbot = () => {
   const [userName, setUserName] = useState('');
@@ -18,16 +19,13 @@ const Chatbot = () => {
   const [currIngredients, setCurrIngredients] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [missingIngredients, setMissingIngredients] = useState([]);
-
   const [messages, setMessages] = useState([]);
-
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const messageEndRef = useRef(null);
   const inputRef = useRef();
   const [parsedRecipe, setParsedRecipe] = useState(null);
 
-  // Fetch user info from Firestore once on mount
   useEffect(() => {
     const fetchUserInfo = async () => {
       const user = auth.currentUser;
@@ -38,7 +36,14 @@ const Chatbot = () => {
           const data = userSnap.data();
           setUserName(data.displayName || 'there');
           setUserDietary(data.dietaryRestrictions || 'none');
-          setCurrIngredients(data.currIngredients || []);
+          const ingredients = data.currIngredients;
+          if (Array.isArray(ingredients)) {
+            setCurrIngredients(ingredients);
+          } else if (typeof ingredients === 'string') {
+            setCurrIngredients(ingredients.split(',').map(i => i.trim()).filter(Boolean));
+          } else {
+            setCurrIngredients([]);   
+          }
         } else {
           setUserName('there');
           setUserDietary('none');
@@ -51,28 +56,21 @@ const Chatbot = () => {
     fetchUserInfo();
   }, []);
 
-  // Set initial system + assistant greeting messages once user info loaded
   useEffect(() => {
-    if (!userName) return; // wait until userName set
-
+    if (!userName) return;
     setMessages([
       {
         role: 'system',
         content: `You are a helpful AI recipe assistant. When a user enters ingredients, suggest a recipe using those items.
-  
-      Additionally, generate a recipe name and provide the following metadata clearly at the top:
-  
-      Metadata:
-      Name: [recipe name]
-      Dietary: [category]
-      Cuisine: [type]
-      Difficulty: [level]
-  
-      Then, continue with the recipe as normal with "Ingredients" and "Instructions".
-  
-      The user has the following dietary restrictions: "${userDietary}". Do NOT recommend recipes that violate these restrictions.
-
-      Make sure to clearly distinguish between metadata, ingredients, and instructions.`
+        Additionally, generate a recipe name and provide the following metadata clearly at the top:
+        Metadata:
+        Name: [recipe name]
+        Dietary: [category]
+        Cuisine: [type]
+        Difficulty: [level]
+        Then, continue with the recipe as normal with "Ingredients" and "Instructions".
+        The user has the following dietary restrictions: "${userDietary}". Do NOT recommend recipes that violate these restrictions.
+        Make sure to clearly distinguish between metadata, ingredients, and instructions.`
       },
       {
         role: 'assistant',
@@ -81,19 +79,11 @@ const Chatbot = () => {
     ]);
   }, [userName, userDietary]);
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
+  useEffect(() => { scrollToBottom(); }, [messages]);
+  useEffect(() => { inputRef.current?.focus(); }, []);
 
   const scrollToBottom = () => {
-    const el = messageEndRef.current;
-    if (el && typeof el.scrollIntoView === 'function') {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
+    messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const sendMessage = async () => {
@@ -139,23 +129,13 @@ const Chatbot = () => {
     }
   };
 
-  // ... rest of your code remains exactly the same as you provided,
-  // including isRecipe, extractRecipeData, mapDifficultyToNumber, getDifficultyText,
-  // parseDietaryEnum, getDietaryText, getRealRecipeLink,
-  // generateAndStoreImage, formatRecipeWithRealLink, handleKeyDown,
-  // and the return JSX
-
-  // I’ll just paste your unchanged functions and JSX below for completeness:
-
   const isRecipe = (text) => text.includes('Ingredients:') && text.includes('Instructions:');
 
   const extractRecipeData = (text) => {
     const metadata = text.match(/Metadata:\s*Name:\s*(.+?)\s*Dietary:\s*(.+?)\s*Cuisine:\s*(.+?)\s*Difficulty:\s*(.+?)(?:\n|$)/i);
     const [recipeName, dietary, cuisine, difficulty] = metadata ? metadata.slice(1).map(str => str.trim()) : ['Not specified', 'Not specified', 'Not specified', 'Easy'];
-
     const ingredients = text.match(/Ingredients:([\s\S]*?)Instructions:/)?.[1].trim() ?? 'No ingredients provided.';
     const instructions = text.match(/Instructions:([\s\S]*)/)?.[1].trim() ?? 'No instructions provided.';
-
     return {
       recipeID: crypto.randomUUID(),
       recipeName,
@@ -187,18 +167,16 @@ const Chatbot = () => {
           }
         }
       );
-  
       const recipe = response.data[0];
       if (!recipe?.id) return null;
-  
+
       const info = await axios.get(`https://api.spoonacular.com/recipes/${recipe.id}/information`, {
         params: {
           apiKey: process.env.REACT_APP_SPOONACULAR_API_KEY,
         }
       });
-  
+
       return info.data?.sourceUrl ?? null;
-  
     } catch (err) {
       console.error('Error fetching real recipe link:', err);
       return null;
@@ -207,30 +185,12 @@ const Chatbot = () => {
 
   const getMissingIngredients = async () => {
     if (!parsedRecipe || !currIngredients) return [];
-  
-    // Extract and normalize ingredients from recipe
-    const recipeIngs = parsedRecipe.ingredients
-      .split('\n')
-      .map(ing => ing.trim().toLowerCase())
-      .filter(Boolean);
-  
-    // Normalize user's current ingredients
+    const recipeIngs = parsedRecipe.ingredients.split('\n').map(ing => ing.trim().toLowerCase()).filter(Boolean);
     const userIngs = currIngredients.map(ing => ing.toLowerCase());
-  
-    // Find missing ingredients
     const missing = recipeIngs.filter(ing => !userIngs.includes(ing));
-  
     if (missing.length === 0) return [];
-  
-    // Create prompt for GPT with missing ingredients to get price estimates
-    const prompt = `
-    Provide a price estimate in USD for each of these ingredients, in the format:
-    Ingredient: $X.XX
-  
-    Ingredients:
-    ${missing.join('\n')}
-    `;
-  
+
+    const prompt = `Provide a price estimate in USD for each of these ingredients:\n${missing.join('\n')}`;
     try {
       const response = await axios.post(
         'https://api.openai.com/v1/chat/completions',
@@ -249,10 +209,9 @@ const Chatbot = () => {
           }
         }
       );
-  
+
       const gptReply = response.data.choices[0].message.content;
-  
-      // Parse prices from GPT reply
+
       const prices = missing.map(ing => {
         const regex = new RegExp(`${ing}[:\\s]*\\$?(\\d+(\\.\\d{1,2})?)`, 'i');
         const match = gptReply.match(regex);
@@ -261,28 +220,47 @@ const Chatbot = () => {
           price: match ? parseFloat(match[1]) : null,
         };
       });
-  
-      return prices; // Array of { ingredient, price } for missing ingredients
-  
+
+      return prices;
     } catch (error) {
       console.error('Failed to fetch ingredient prices:', error);
-      // Return missing without prices as fallback
       return missing.map(ing => ({ ingredient: ing, price: null }));
     }
   };
-  
 
   const generateAndStoreImage = async (prompt, recipeID) => {
-    // Your existing implementation here
+    try {
+      const response = await axios.post(
+        'https://api.openai.com/v1/images/generations',
+        {
+          prompt,
+          n: 1,
+          size: '512x512',
+          response_format: 'b64_json',
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
+          },
+        }
+      );
+
+      const b64Image = response.data.data[0].b64_json;
+      const storageRef = ref(storage, `recipeImages/${recipeID}.png`);
+      await uploadString(storageRef, b64Image, 'base64');
+      return await getDownloadURL(storageRef);
+    } catch (error) {
+      console.error('Failed to generate/store image:', error);
+      return null;
+    }
   };
 
   const formatRecipeWithRealLink = async ({ recipeName, dietary, cuisineType, difficulty, ingredients, instructions }) => {
     const difficultyText = getDifficultyText(difficulty);
     const dietaryText = getDietaryText(dietary);
-
     const ingredientsHTML = ingredients.split('\n').map(i => `<li>${i.trim()}</li>`).join('');
     const instructionsHTML = instructions.split('\n').map(i => `<p>${i.trim()}</p>`).join('');
-
     const recipeLink = await getRealRecipeLink(ingredients);
 
     return `
@@ -301,7 +279,7 @@ const Chatbot = () => {
         ${instructionsHTML}
         ${
           recipeLink
-            ? `<p><strong>If you would like a different recipe with some similiar ingredients, check out this link: <a href="${recipeLink}" target="_blank">${recipeLink}</a></strong><br /><em>(Note: This recipe may not include all the ingredients you provided.)</em></p>`
+            ? `<p><strong>If you would like a different recipe with similar ingredients, check out this link: <a href="${recipeLink}" target="_blank">${recipeLink}</a></strong><br /><em>(Note: This recipe may not include all the ingredients you provided.)</em></p>`
             : '<p><strong>No real recipe link found for this dish.</strong></p>'
         }
       </div>
@@ -312,13 +290,11 @@ const Chatbot = () => {
     if (e.key === 'Enter') sendMessage();
   };
 
-
   useEffect(() => {
     const fetchMissingIngredients = async () => {
       const prices = await getMissingIngredients();
       setMissingIngredients(prices);
     };
-  
     fetchMissingIngredients();
   }, [parsedRecipe, currIngredients]);
 
@@ -341,9 +317,9 @@ const Chatbot = () => {
         {messages.filter(msg => msg.role !== 'system').map((msg, i) => (
           <Box key={i} className={`chatbot-message ${msg.role}`}>
             <Paper className={`bubble ${msg.role}`}>
-              {msg.role === 'assistant' ? (
-                <div dangerouslySetInnerHTML={{ __html: msg.content }} />
-              ) : msg.content}
+              {msg.role === 'assistant'
+                ? <div dangerouslySetInnerHTML={{ __html: msg.content }} />
+                : msg.content}
             </Paper>
           </Box>
         ))}
@@ -371,52 +347,37 @@ const Chatbot = () => {
           {loading ? <CircularProgress size={24} color="inherit" /> : <Chat />}
         </Button>
       </Box>
-      <Button 
-  variant="outlined" 
-  color="secondary" 
-  onClick={() => setModalOpen(true)}
-  style={{ margin: '10px 0' }}
->
-  Find Nearest Grocery Stores
-</Button>
-<Modal
-  open={modalOpen}
-  onClose={() => setModalOpen(false)}
-  aria-labelledby="nearest-grocery-modal-title"
-  aria-describedby="nearest-grocery-modal-description"
-  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
->
-  <Paper 
-    style={{ 
-      position: 'relative',  // Make sure relative positioning is set for absolute child
-      width: '90%', 
-      maxWidth: 600, 
-      maxHeight: '80vh', 
-      overflowY: 'auto', 
-      padding: 20 
-    }}
-  >
-    {/* X button */}
-    <IconButton
-      onClick={() => setModalOpen(false)}
-      style={{ 
-        position: 'absolute', 
-        top: 8, 
-        right: 8 
-      }}
-      aria-label="close"
-      size="large"
-    >
-      <CloseIcon />
-    </IconButton>
 
-    <Typography id="nearest-grocery-modal-title" variant="h6" gutterBottom>
-      Nearest Grocery Stores
-    </Typography>
-    <NearestGroceryStore missingIngredients={missingIngredients} />
-  </Paper>
-</Modal>
+      <Button
+        variant="outlined"
+        color="secondary"
+        onClick={() => setModalOpen(true)}
+        style={{ margin: '10px 0' }}
+      >
+        Find Nearest Grocery Stores
+      </Button>
 
+      <Modal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        aria-labelledby="nearest-grocery-modal-title"
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      >
+        <Paper style={{ position: 'relative', width: '90%', maxWidth: 600, maxHeight: '80vh', overflowY: 'auto', padding: 20 }}>
+          <IconButton
+            onClick={() => setModalOpen(false)}
+            style={{ position: 'absolute', top: 8, right: 8 }}
+            aria-label="close"
+            size="large"
+          >
+            <CloseIcon />
+          </IconButton>
+          <Typography id="nearest-grocery-modal-title" variant="h6" gutterBottom>
+            Nearest Grocery Stores
+          </Typography>
+          <NearestGroceryStore missingIngredients={missingIngredients} />
+        </Paper>
+      </Modal>
 
       {parsedRecipe && (
         <Box mt={2} textAlign="center">
@@ -427,17 +388,10 @@ const Chatbot = () => {
               const user = auth.currentUser;
               if (!user) return alert("You must be logged in to submit a recipe.");
               const { uid, displayName, email } = user;
-
               await createOrUpdateUser(uid, displayName ?? 'Anonymous', email ?? 'unknown@example.com');
-
               const prompt = `A top-down photo of a delicious dish called ${parsedRecipe.recipeName}.`;
               const imageURL = await generateAndStoreImage(prompt, parsedRecipe.recipeID);
-
-              const recipeWithImage = {
-                ...parsedRecipe,
-                imageURL: imageURL ?? '',  // Store empty string if it fails
-              };
-
+              const recipeWithImage = { ...parsedRecipe, imageURL: imageURL ?? '' };
               await addRecipeToUser(uid, recipeWithImage);
               await addOrInitRecipeRating(recipeWithImage);
               alert('Recipe saved!');
