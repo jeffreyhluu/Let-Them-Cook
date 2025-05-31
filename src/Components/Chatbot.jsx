@@ -4,12 +4,10 @@ import {
   TextField, Button, Box, Paper, CircularProgress,
   Modal, Typography, IconButton
 } from '@mui/material';
-import { Chat } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import { addRecipeToUser, addOrInitRecipeRating, createOrUpdateUser, getAllUserRecipes, userHasRecipe, copyRecipeToUser, getUserIDByRecipeID } from '../firestoreHelpers';
-import { v4 as uuid4 } from 'uuid';
 import { auth, db, storage } from '../firebase';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import { ref, uploadString, getDownloadURL } from 'firebase/storage';
 import './Chatbot.css';
 import NearestGroceryStore from '../pages/NearestGroceryStore';
