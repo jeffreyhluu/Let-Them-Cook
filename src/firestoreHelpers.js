@@ -204,7 +204,7 @@ export async function updateRecipeRatingForUser(uid, recipeID, newRating) {
   // Update user's local recipe to mark as rated
   const userDocRef = doc(db, "UsersCollection", uid);
   const userDocSnap = await getDoc(userDocRef);
-  if (!userDocSnap.exists()) return;
+  if (!userDocSnap || !userDocSnap.exists()) return;
 
   const userData = userDocSnap.data();
   const updatedRecipes = userData.recipes.map((r) =>

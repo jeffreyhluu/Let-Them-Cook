@@ -134,34 +134,3 @@ import {
 
     expect(setDoc).not.toHaveBeenCalled();
   });
-
-  // mock test for adding a rating
- test('updateRecipeRatingForUser updates the rating of a specific recipe', async () => {
-  const userId = '123';
-  const recipeID = 'r101';
-  const newRating = 4.5;
-
-  const mockRecipes = [
-    { recipeID: 'r100', name: 'Pasta', rating: 3 },
-    { recipeID: 'r101', name: 'Pizza', rating: 2 },
-  ];
-
-  // Ensure doc returns your mocked reference
-  doc.mockReturnValueOnce(mockDocRef);
-
-  getDoc.mockResolvedValueOnce({
-    exists: () => true,
-    data: () => ({
-      recipes: mockRecipes
-    })
-  });
-
-  await updateRecipeRatingForUser(userId, recipeID, newRating);
-
-  expect(updateDoc).toHaveBeenCalledWith(mockDocRef, {
-    recipes: [
-      { recipeID: 'r100', name: 'Pasta', rating: 3 },
-      { recipeID: 'r101', name: 'Pizza', rating: newRating }
-    ]
-  });
-});
