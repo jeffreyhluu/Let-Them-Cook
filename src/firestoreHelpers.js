@@ -14,7 +14,6 @@ const USERS_COLLECTION = 'UsersCollection';
 const RECIPE_RATINGS_COLLECTION = 'RecipeRatingsCollection';
 
 // Get all recipes from users collection
-// Get all user-submitted recipes, including the originating userId
 export async function getAllUserRecipes() {
   const usersSnapshot = await getDocs(collection(db, USERS_COLLECTION));
   const allRecipes = [];
@@ -183,27 +182,35 @@ export async function addOrInitRecipeRating(recipe) {
   }
 }
 
-// Update a recipe
-export async function updateRecipeRatingForUser(userId, recipeID, newRating) {
-  const userRef = doc(db, USERS_COLLECTION, userId);
-  const userSnap = await getDoc(userRef);
+// Update RecipeRatingsCollection
+export async function updateRecipeRatingForUser(uid, recipeID, newRating) {
+  const ratingRef = doc(db, "RecipeRatingsCollection", recipeID);
+  const ratingSnap = await getDoc(ratingRef);
 
-  if (!userSnap.exists()) {
-    throw new Error(`User with ID ${userId} does not exist.`);
+  if (!ratingSnap.exists()) {
+    throw new Error(`No recipe ratings found for recipeID: ${recipeID}`);
   }
 
-  const userData = userSnap.data();
-  const recipes = userData.recipes || [];
+  const data = ratingSnap.data();
+  const newTotal = (data.averageRating || 0) * (data.ratingCount || 0) + newRating;
+  const newCount = (data.ratingCount || 0) + 1;
+  const newAverage = newTotal / newCount;
 
-  const updatedRecipes = recipes.map(recipe => {
-    if (recipe.recipeID === recipeID) {
-      return {
-        ...recipe,
-        rating: newRating
-      };
-    }
-    return recipe;
+  await updateDoc(ratingRef, {
+    averageRating: newAverage,
+    ratingCount: newCount,
   });
 
-  await updateDoc(userRef, { recipes: updatedRecipes });
+  // Update user's local recipe to mark as rated
+  const userDocRef = doc(db, "UsersCollection", uid);
+  const userDocSnap = await getDoc(userDocRef);
+  if (!userDocSnap.exists()) return;
+
+  const userData = userDocSnap.data();
+  const updatedRecipes = userData.recipes.map((r) =>
+    r.recipeID === recipeID ? { ...r, rating: newRating, ifRated: true } : r
+  );
+  await updateDoc(userDocRef, {
+    recipes: updatedRecipes,
+  });
 }

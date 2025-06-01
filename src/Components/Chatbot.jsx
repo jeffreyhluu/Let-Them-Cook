@@ -233,7 +233,7 @@ const Chatbot = () => {
       recipeName,
       ingredients,
       instructions,
-      rating: 3,
+      rating: 0,
       difficulty: mapDifficultyToNumber(difficulty),
       cuisineType: cuisine,
       dietary: parseDietaryEnum(dietary),

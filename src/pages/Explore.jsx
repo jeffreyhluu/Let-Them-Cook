@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { db, auth } from "../firebase";
-import { collection, getDocs, query, where, doc, updateDoc } from "firebase/firestore";
+import { collection, getDocs, query, where, doc, updateDoc, getDoc } from "firebase/firestore";
 import { Link } from "react-router-dom";
 import Flag from "react-world-flags";
 import unFlag from "../assets/un-flag.png";
@@ -25,6 +25,7 @@ const cuisineToFlag = {
 
 const Explore = () => {
   const [recipes, setRecipes] = useState([]);
+  const [averageRatings, setAverageRatings] = useState({});
   const [loading, setLoading] = useState(true);
   const [userRatings, setUserRatings] = useState({});
 
@@ -92,6 +93,20 @@ const Explore = () => {
           await updateDoc(userDocRef, { recipes: updatedRecipes });
         }
 
+        // Fetch average ratings here
+        const ratings = {};
+        for (const recipe of loadedRecipes) {
+          const ratingDocRef = doc(db, "RecipeRatingsCollection", recipe.recipeID);
+          const ratingDocSnap = await getDoc(ratingDocRef);
+          if (ratingDocSnap.exists()) {
+            ratings[recipe.recipeID] = ratingDocSnap.data().averageRating || 0;
+          } else {
+            ratings[recipe.recipeID] = 0;
+          }
+        }
+        console.log("Ratings: " + ratings);
+        setAverageRatings(ratings);
+
         setLoading(false);
       } catch (error) {
         console.error("Error fetching recipes:", error);
@@ -100,18 +115,16 @@ const Explore = () => {
     };
 
     fetchRecipes();
+
   }, []);
 
   const renderStars = (rating) => {
-    const fullStars = Math.floor(rating);
-    const partialStars = Math.round((rating - fullStars) * 10);
+    const fullStars = Math.round(rating);
     let starArray = [];
 
     for (let i = 0; i < 5; i++) {
       if (i < fullStars) {
         starArray.push("⭐");
-      } else if (i === fullStars && partialStars > 0) {
-        starArray.push("⭐️");
       } else {
         starArray.push("☆");
       }
@@ -158,7 +171,7 @@ const Explore = () => {
       await updateRecipeRatingForUser(currentUser.uid, recipeID, Number(newRating));
       alert("Rating submitted!");
       setRecipes((prev) =>
-        prev.map((r) => r.recipeID === recipeID ? { ...r, rating: Number(newRating) } : r)
+        prev.map((r) => r.recipeID === recipeID ? { ...r, rating: Number(newRating), ifRated: true } : r)
       );
     } catch (error) {
       console.error("Error submitting rating:", error);
@@ -203,23 +216,37 @@ const Explore = () => {
                 )}
               </p>
               <p><strong>Difficulty:</strong> {getDifficultyText(recipe.difficulty)}</p>
-              <p><strong>Rating:</strong> {renderStars(recipe.rating)}</p>
+              <p>
+                <strong>Your Rating:</strong>{" "}
+                {renderStars(recipe.rating)}
+              </p>
+              <p>
+                <strong>Average Rating:</strong>{" "}
+                {averageRatings[recipe.recipeID] > 0
+                  ? `${renderStars(averageRatings[recipe.recipeID])} (${averageRatings[recipe.recipeID].toFixed(1)}/5.0)`
+                  : "No ratings from any users yet"}
+              </p>
             </div>
-            <div className="rating-input">
-              <label>
-                Rate this recipe:
-                <select
-                  value={userRatings[recipe.recipeID] || ""}
-                  onChange={(e) => handleRatingChange(recipe.recipeID, e.target.value)}
-                >
-                  <option value="">--</option>
-                  {[1, 2, 3, 4, 5].map((n) => (
-                    <option key={n} value={n}>{n}</option>
-                  ))}
-                </select>
-              </label>
-              <button onClick={() => handleRatingSubmit(recipe.recipeID)}>Submit</button>
-            </div>
+  
+            {recipe.ifRated ? (
+              <p><em>You've already rated this recipe.</em></p>
+            ) : (
+              <div className="rating-input">
+                <label>
+                  Rate this recipe:
+                  <select
+                    value={userRatings[recipe.recipeID] || ""}
+                    onChange={(e) => handleRatingChange(recipe.recipeID, e.target.value)}
+                  >
+                    <option value="">--</option>
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <option key={n} value={n}>{n}</option>
+                    ))}
+                  </select>
+                </label>
+                <button onClick={() => handleRatingSubmit(recipe.recipeID)}>Submit</button>
+              </div>
+            )}
           </div>
         ))
       ) : (
@@ -227,6 +254,6 @@ const Explore = () => {
       )}
     </div>
   );
-};
-
-export default Explore;
+  };
+  
+  export default Explore;
