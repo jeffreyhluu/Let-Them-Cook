@@ -7,7 +7,7 @@ import unFlag from "../assets/un-flag.png";
 import axios from "axios";
 import { updateRecipeRatingForUser } from "../firestoreHelpers";
 import './css/Explore.css';
-import StarRating from "./StarRating"; // ✅ NEW IMPORT
+import StarRating from "./StarRating"; // ✅ StarRating component
 
 const cuisineToFlag = {
   Italian: "IT",
@@ -30,7 +30,6 @@ const Explore = () => {
   const [loading, setLoading] = useState(true);
   const [userRatings, setUserRatings] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
-
 
   const fetchImageForRecipe = async (recipeName) => {
     try {
@@ -96,7 +95,6 @@ const Explore = () => {
           await updateDoc(userDocRef, { recipes: updatedRecipes });
         }
 
-        // Fetch average ratings here
         const ratings = {};
         for (const recipe of loadedRecipes) {
           const ratingDocRef = doc(db, "RecipeRatingsCollection", recipe.recipeID);
@@ -107,9 +105,8 @@ const Explore = () => {
             ratings[recipe.recipeID] = 0;
           }
         }
-        console.log("Ratings: " + ratings);
-        setAverageRatings(ratings);
 
+        setAverageRatings(ratings);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching recipes:", error);
@@ -118,7 +115,6 @@ const Explore = () => {
     };
 
     fetchRecipes();
-
   }, []);
 
   const renderStars = (rating) => {
@@ -138,14 +134,10 @@ const Explore = () => {
 
   const getDifficultyText = (difficulty) => {
     switch (difficulty) {
-      case 1:
-        return "Easy";
-      case 2:
-        return "Medium";
-      case 3:
-        return "Hard";
-      default:
-        return "Unknown";
+      case 1: return "Easy";
+      case 2: return "Medium";
+      case 3: return "Hard";
+      default: return "Unknown";
     }
   };
 
@@ -153,28 +145,24 @@ const Explore = () => {
     return cuisineToFlag[cuisine] || "custom";
   };
 
-  const handleRatingChange = (recipeID, newRating) => {
+  const handleRatingChange = async (recipeID, newRating) => {
     setUserRatings((prev) => ({
       ...prev,
       [recipeID]: newRating,
     }));
-  };
 
-  const handleRatingSubmit = async (recipeID) => {
     const currentUser = auth.currentUser;
     if (!currentUser) {
       alert("You must be logged in to rate recipes.");
       return;
     }
 
-    const newRating = userRatings[recipeID];
-    if (!newRating) return;
-
     try {
       await updateRecipeRatingForUser(currentUser.uid, recipeID, Number(newRating));
-      alert("Rating submitted!");
       setRecipes((prev) =>
-        prev.map((r) => r.recipeID === recipeID ? { ...r, rating: Number(newRating), ifRated: true } : r)
+        prev.map((r) =>
+          r.recipeID === recipeID ? { ...r, rating: Number(newRating), ifRated: true } : r
+        )
       );
     } catch (error) {
       console.error("Error submitting rating:", error);
@@ -231,10 +219,7 @@ const Explore = () => {
                 )}
               </p>
               <p><strong>Difficulty:</strong> {getDifficultyText(recipe.difficulty)}</p>
-              <p>
-                <strong>Your Rating:</strong>{" "}
-                {renderStars(recipe.rating)}
-              </p>
+              <p><strong>Your Rating:</strong> {renderStars(recipe.rating)}</p>
               <p>
                 <strong>Average Rating:</strong>{" "}
                 {averageRatings[recipe.recipeID] > 0
@@ -242,16 +227,13 @@ const Explore = () => {
                   : "No ratings from any users yet"}
               </p>
             </div>
-            
             <div className="rating-input">
               <label>Rate this recipe:</label>
               <StarRating
-                rating={userRatings[recipe.recipeID] || 0}
+                rating={userRatings[recipe.recipeID] || recipe.rating || 0}
                 onRate={(rating) => handleRatingChange(recipe.recipeID, rating)}
               />
-              <button onClick={() => handleRatingSubmit(recipe.recipeID)}>Submit</button>
             </div>
-            
           </div>
         ))
       ) : (

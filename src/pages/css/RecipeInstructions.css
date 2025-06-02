@@ -1,0 +1,90 @@
+.recipe-instructions-page {
+  max-width: 900px;
+  margin: 3rem auto;
+  padding: 2.5rem;
+  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+  transition: all 0.3s ease-in-out;
+}
+
+.recipe-header {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.recipe-image {
+  width: 100%;
+  max-width: 320px;
+  height: 320px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+}
+
+.recipe-image:hover {
+  transform: scale(1.03);
+}
+
+.recipe-meta {
+  flex: 1;
+  min-width: 250px;
+}
+
+.recipe-meta h1 {
+  font-size: 2.4rem;
+  margin-bottom: 1rem;
+  color: #222;
+}
+
+.recipe-meta p {
+  margin: 0.75rem 0;
+  font-size: 1.05rem;
+  color: #444;
+  line-height: 1.5;
+}
+
+.flag-icon {
+  width: 24px;
+  height: 16px;
+  margin-left: 8px;
+  vertical-align: middle;
+  border-radius: 2px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.1);
+}
+
+.instructions-section {
+  margin-top: 3rem;
+  border-top: 1px solid #ddd;
+  padding-top: 2rem;
+}
+
+.instructions-section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.recipe-text {
+  white-space: pre-line;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #555;
+  background-color: #fcfcfc;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.loading,
+.error {
+  text-align: center;
+  font-size: 1.4rem;
+  margin-top: 3rem;
+  color: #666;
+}
