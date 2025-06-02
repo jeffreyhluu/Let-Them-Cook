@@ -39,3 +39,17 @@
 .rating-input select {
   margin-left: 8px;
 }
+
+.search-bar {
+  margin-bottom: 24px;
+  margin: 20px 0;
+  text-align: left;
+}
+
+.search-bar input {
+  width: 60%;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
