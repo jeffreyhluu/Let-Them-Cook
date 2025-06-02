@@ -192,24 +192,48 @@ export async function updateRecipeRatingForUser(uid, recipeID, newRating) {
   }
 
   const data = ratingSnap.data();
-  const newTotal = (data.averageRating || 0) * (data.ratingCount || 0) + newRating;
-  const newCount = (data.ratingCount || 0) + 1;
+  const currentAverage = data.averageRating || 0;
+  const currentCount = data.ratingCount || 0;
+
+  // Step 1: Fetch user's local recipe data
+  const userDocRef = doc(db, "UsersCollection", uid);
+  const userDocSnap = await getDoc(userDocRef);
+  if (!userDocSnap.exists()) return;
+
+  const userData = userDocSnap.data();
+  let userHasRatedBefore = false;
+  let oldRating = 0;
+
+  const updatedRecipes = userData.recipes.map((r) => {
+    if (r.recipeID === recipeID) {
+      userHasRatedBefore = r.ifRated === true;
+      oldRating = r.rating || 0;
+      return { ...r, rating: newRating, ifRated: true };
+    }
+    return r;
+  });
+
+  // Step 2: Calculate new total and count
+  let newTotal;
+  let newCount = currentCount;
+
+  if (userHasRatedBefore) {
+    // Update total without changing count
+    newTotal = currentAverage * currentCount - oldRating + newRating;
+  } else {
+    // First rating: add and increment count
+    newTotal = currentAverage * currentCount + newRating;
+    newCount += 1;
+  }
+
   const newAverage = newTotal / newCount;
 
+  // Step 3: Save updates
   await updateDoc(ratingRef, {
     averageRating: newAverage,
     ratingCount: newCount,
   });
 
-  // Update user's local recipe to mark as rated
-  const userDocRef = doc(db, "UsersCollection", uid);
-  const userDocSnap = await getDoc(userDocRef);
-  if (!userDocSnap || !userDocSnap.exists()) return;
-
-  const userData = userDocSnap.data();
-  const updatedRecipes = userData.recipes.map((r) =>
-    r.recipeID === recipeID ? { ...r, rating: newRating, ifRated: true } : r
-  );
   await updateDoc(userDocRef, {
     recipes: updatedRecipes,
   });
