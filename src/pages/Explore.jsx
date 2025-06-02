@@ -28,6 +28,8 @@ const Explore = () => {
   const [averageRatings, setAverageRatings] = useState({});
   const [loading, setLoading] = useState(true);
   const [userRatings, setUserRatings] = useState({});
+  const [searchQuery, setSearchQuery] = useState("");
+
 
   const fetchImageForRecipe = async (recipeName) => {
     try {
@@ -183,11 +185,23 @@ const Explore = () => {
     return <div>Loading...</div>;
   }
 
+  const filteredRecipes = recipes.filter((recipe) =>
+    recipe.recipeName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="explore">
       <h1>Explore Recipes</h1>
-      {recipes.length > 0 ? (
-        recipes.map((recipe) => (
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Search recipes..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
+      {filteredRecipes.length > 0 ? (
+        filteredRecipes.map((recipe) => (
           <div key={recipe.recipeID} className="recipe-card">
             <Link to={`/recipe/${recipe.recipeID}`}>
               <img
@@ -247,7 +261,7 @@ const Explore = () => {
           </div>
         ))
       ) : (
-        <p>No recipes to explore yet.</p>
+        <p>No recipes saved in your profile (or none match the search).</p>
       )}
     </div>
   );

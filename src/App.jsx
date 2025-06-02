@@ -52,7 +52,6 @@ const App = () => {
                 </Link>
               </li>
               <li><Link to="/explore">Explore</Link></li>
-              <li><Link to="/user-query">User Query</Link></li>
               <li><Link to="/nearest-grocery-store">Nearest Grocery Store</Link></li>
               <li><Link to="/profile">Profile</Link></li>
               <li>
@@ -66,7 +65,6 @@ const App = () => {
               <Route path="/" element={<Navigate to="/home" />} />
               <Route path="/home" element={<Home />} />
               <Route path="/explore" element={<Explore />} />
-              <Route path="/user-query" element={<UserQuery />} />
               <Route path="/nearest-grocery-store" element={<NearestGroceryStore />} />
               <Route path="/reviews" element={<Reviews />} />
               <Route path="/profile" element={<Profile />} />
