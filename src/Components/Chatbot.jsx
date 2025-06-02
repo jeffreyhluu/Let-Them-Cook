@@ -27,6 +27,9 @@ const Chatbot = () => {
   const [matchedExistingRecipe, setMatchedExistingRecipe] = useState(null);
   const [oldIdentification, setOldIdentification] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [awaitingConfirmation, setAwaitingConfirmation] = useState(false);
+  const [lastIngredientInput, setLastIngredientInput] = useState('');
+  const [matchedRecipeName, setMatchedRecipeName] = useState('');
 
 
   useEffect(() => {
@@ -147,8 +150,14 @@ const Chatbot = () => {
     setInput('');
     setLoading(true);
 
+    if (awaitingConfirmation) {
+      await handleConfirmationResponse(input);
+      return;
+    }
+
     try {
       const similarID = await checkForSimilarRecipe(input);
+      setLastIngredientInput(input);
       console.log("Similar ID: " + similarID);
       if (similarID) {
         const allRecipes = await getAllUserRecipes();
@@ -160,10 +169,13 @@ const Chatbot = () => {
           if (currentUser) {
             const hasRecipe = await userHasRecipe(currentUser.uid, similarID);
             if (hasRecipe) {
+              const formattedSameHTML = await formatRecipeWithRealLink(matchedRecipe);
               setMessages(prev => [...prev, {
                 role: 'assistant',
-                content: `You already saved a similar recipe called "${matchedRecipe.recipeName}"!`,
+                content: `You already saved a similar recipe called "${matchedRecipe.recipeName}"! The recipe is \n\n${formattedSameHTML} Do you want a different recipe with these similar ingredients? Reply Yes or No.`,
               }]);
+              setMatchedRecipeName(matchedRecipe.recipeName);
+              setAwaitingConfirmation(true);
               setMatchedExistingRecipe(null);
               setParsedRecipe(null);
             } else {
@@ -223,6 +235,69 @@ const Chatbot = () => {
       setLoading(false);
     }
   }
+
+  const handleConfirmationResponse = async (response) => {
+    const answer = response.trim().toLowerCase();
+    setAwaitingConfirmation(false); // clear flag immediately
+  
+    if (answer === 'yes') {
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: "Great! Generating a new recipe for you now..."
+      }]);
+      await proceedWithRecipeGeneration(lastIngredientInput);
+    } else {
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: "Got it! Let me know if you need anything else."
+      }]);
+    }
+  
+    setLoading(false);
+  };
+  
+
+  const proceedWithRecipeGeneration = async (userInput) => {
+    const systemMessage = messages.find(m => m.role === 'system');
+
+    const userMessage = {
+      role: 'user',
+      content: matchedRecipeName
+        ? `${userInput}. Please generate a different recipe than "${matchedRecipeName}". Avoid using the same name or method.`
+        : userInput,
+    };
+
+    const baseMessages = [systemMessage, userMessage];
+
+    const response = await axios.post(
+      'https://api.openai.com/v1/chat/completions',
+      {
+        model: 'gpt-3.5-turbo',
+        messages: baseMessages,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
+        },
+      }
+    );
+  
+    const responseText = response.data.choices[0].message.content;
+  
+    if (!isRecipe(responseText)) {
+      setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, I couldn’t format this as a full recipe. Try again!' }]);
+      return;
+    }
+  
+    const recipeObj = extractRecipeData(responseText);
+    setParsedRecipe(recipeObj);
+    setMatchedExistingRecipe(null);
+  
+    const formattedHTML = await formatRecipeWithRealLink(recipeObj);
+    setMessages(prev => [...prev, { role: 'assistant', content: formattedHTML }]);
+  };
+  
 
   const isRecipe = (text) => text.includes('Ingredients:') && text.includes('Instructions:');
 
