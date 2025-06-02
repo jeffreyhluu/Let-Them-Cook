@@ -7,6 +7,7 @@ import unFlag from "../assets/un-flag.png";
 import axios from "axios";
 import { updateRecipeRatingForUser } from "../firestoreHelpers";
 import './css/Explore.css';
+import StarRating from "./StarRating"; // ✅ NEW IMPORT
 
 const cuisineToFlag = {
   Italian: "IT",
@@ -243,18 +244,11 @@ const Explore = () => {
             </div>
             
             <div className="rating-input">
-              <label>
-                Rate this recipe:
-                <select
-                  value={userRatings[recipe.recipeID] || ""}
-                  onChange={(e) => handleRatingChange(recipe.recipeID, e.target.value)}
-                >
-                  <option value="">--</option>
-                  {[1, 2, 3, 4, 5].map((n) => (
-                    <option key={n} value={n}>{n}</option>
-                  ))}
-                </select>
-              </label>
+              <label>Rate this recipe:</label>
+              <StarRating
+                rating={userRatings[recipe.recipeID] || 0}
+                onRate={(rating) => handleRatingChange(recipe.recipeID, rating)}
+              />
               <button onClick={() => handleRatingSubmit(recipe.recipeID)}>Submit</button>
             </div>
             
@@ -265,6 +259,6 @@ const Explore = () => {
       )}
     </div>
   );
-  };
-  
-  export default Explore;
+};
+
+export default Explore;
