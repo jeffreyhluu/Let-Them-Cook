@@ -227,26 +227,23 @@ const Explore = () => {
                   : "No ratings from any users yet"}
               </p>
             </div>
-  
-            {recipe.ifRated ? (
-              <p><em>You've already rated this recipe.</em></p>
-            ) : (
-              <div className="rating-input">
-                <label>
-                  Rate this recipe:
-                  <select
-                    value={userRatings[recipe.recipeID] || ""}
-                    onChange={(e) => handleRatingChange(recipe.recipeID, e.target.value)}
-                  >
-                    <option value="">--</option>
-                    {[1, 2, 3, 4, 5].map((n) => (
-                      <option key={n} value={n}>{n}</option>
-                    ))}
-                  </select>
-                </label>
-                <button onClick={() => handleRatingSubmit(recipe.recipeID)}>Submit</button>
-              </div>
-            )}
+            
+            <div className="rating-input">
+              <label>
+                Rate this recipe:
+                <select
+                  value={userRatings[recipe.recipeID] || ""}
+                  onChange={(e) => handleRatingChange(recipe.recipeID, e.target.value)}
+                >
+                  <option value="">--</option>
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <option key={n} value={n}>{n}</option>
+                  ))}
+                </select>
+              </label>
+              <button onClick={() => handleRatingSubmit(recipe.recipeID)}>Submit</button>
+            </div>
+            
           </div>
         ))
       ) : (
