@@ -5,6 +5,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import './css/input.css';
 
 
+
 const Profile = () => {
  const [displayName, setDisplayName] = useState("");
  const [dietaryRestrictions, setDietaryRestrictions] = useState("");
