@@ -1,59 +1,67 @@
 /* Global Styles */
 body {
   font-family: 'Roboto', sans-serif;
-  background-color: #f0f4f8; /* Light, neutral background */
+  background-color: #f7f9fc; /* Softer, cleaner neutral background */
   margin: 0;
   padding: 0;
+  color: #2c3e50; /* Darker, professional text color */
 }
 
 /* Navbar Styles */
 .navbar {
-  background-color: #1528f0; /* Fresh green for the navbar */
+  background-color: #1a2a6c; /* Deep navy blue for professional look */
   padding: 15px 0;
   width: 100%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .nav-links {
   display: flex;
-  justify-content: space-between; /* Distribute buttons evenly across the navbar */
-  align-items: center; /* Vertically align the items in the center */
+  justify-content: space-between;
+  align-items: center;
   list-style: none;
   padding: 0;
   margin: 0;
-  width: 100%; /* Ensure navbar takes up the full width */
+  width: 100%;
 }
 
 .nav-links li {
   font-size: 1.1rem;
+  font-weight: 500;
 }
 
 .nav-links a, .sign-out-btn {
-  color: white;
+  color: #ecf0f1; /* Soft off-white */
   text-decoration: none;
   padding: 10px 20px;
   border-radius: 5px;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  user-select: none;
 }
 
 .nav-links a:hover, .sign-out-btn:hover {
-  background-color: rgba(255, 255, 255, 0.2); /* Light hover effect */
+  background-color: rgba(236, 240, 241, 0.15);
   transform: scale(1.05);
+  box-shadow: 0 3px 8px rgba(236, 240, 241, 0.3);
 }
 
 /* Sign Out Button */
 .sign-out-btn {
-  background-color: #ff4747; /* Red for Sign Out button */
+  background-color: #e74c3c; /* Muted corporate red */
   color: white;
   padding: 10px 15px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 1rem;
-  transition: background-color 0.3s ease;
+  font-weight: 600;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 6px rgba(231, 76, 60, 0.4);
 }
 
 .sign-out-btn:hover {
-  background-color: #ff2b2b; /* Darker red on hover */
+  background-color: #c0392b;
+  box-shadow: 0 4px 12px rgba(192, 57, 43, 0.6);
 }
 
 /* Loading Screen */
@@ -61,45 +69,51 @@ body {
   text-align: center;
   font-size: 1.5rem;
   padding: 50px;
-  color: #333;
+  color: #34495e;
+  font-weight: 500;
 }
 
 /* Page Content */
 main {
   padding: 20px;
-  background-color: #ffffff; /* White background for content */
-  border-radius: 10px; /* Soft rounded corners for content */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Buttons for general use */
 .button {
-  background-color: #F9E79F; /* Soft yellow for buttons */
-  color: #333;
+  background-color: #f7c948; /* Slightly richer yellow */
+  color: #2c3e50;
   padding: 12px 20px;
   border: none;
   border-radius: 5px;
   font-size: 1.1rem;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  box-shadow: 0 3px 8px rgba(247, 201, 72, 0.4);
 }
 
 .button:hover {
-  background-color: #f1d667; /* Slightly darker yellow on hover */
+  background-color: #e0b23f;
   transform: scale(1.05);
+  box-shadow: 0 5px 12px rgba(224, 178, 63, 0.5);
 }
 
 /* Logo Styling */
 .logo {
-  max-height: 65px; /* Adjust the height of the logo */
-  max-width: 100%; /* Ensure the logo does not exceed the width of its container */
-  object-fit: contain; /* Maintains the aspect ratio of the logo */
+  max-height: 65px;
+  max-width: 100%;
+  object-fit: contain;
+  user-select: none;
 }
-
 
 /* Typography for titles */
 h1, h2, h3 {
-  color: #333; /* Dark gray for titles */
+  color: #2c3e50;
+  font-weight: 700;
+  margin-bottom: 0; /* Keep your margins exactly the same */
 }
 
 h1 {
@@ -119,12 +133,13 @@ h3 {
 
 /* Links */
 a {
-  color: #58D68D; /* Green for link text */
+  color: #27ae60; /* Professional green */
   text-decoration: none;
+  transition: color 0.3s ease;
 }
 
 a:hover {
-  color: #45B47C; /* Darker green on hover */
+  color: #1e8449;
   text-decoration: underline;
 }
 
@@ -132,9 +147,12 @@ a:hover {
 .footer {
   text-align: center;
   padding: 20px;
-  background-color: #58D68D;
+  background-color: #27ae60;
   color: white;
   margin-top: 30px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  box-shadow: 0 -4px 12px rgba(39, 174, 96, 0.4);
 }
 
 .footer p {

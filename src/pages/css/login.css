@@ -1,128 +1,403 @@
 /* Ensure html, body, and #root take up full height */
 html, body, #root {
-    height: 100%;
-    margin: 0;
-    padding: 0;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: #f8fafc;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Full-page professional gradient */
+.full-page-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+  background-size: 300% 300%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 1rem;
+  overflow: hidden;
+}
+
+/* Subtle animated background overlay */
+.full-page-gradient::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+  animation: backgroundShift 20s ease-in-out infinite;
+}
+
+@keyframes backgroundShift {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+/* Position logo at the top-left */
+.logo {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  z-index: 10;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.logo:hover {
+  transform: scale(1.05);
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.2));
+}
+
+/* Professional login card */
+.login-card {
+  width: 100%;
+  max-width: 450px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%);
+  backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: 
+    0 32px 64px rgba(0, 0, 0, 0.12),
+    0 16px 32px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 2.5rem;
+  text-align: center;
+  animation: cardEntrance 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 5;
+}
+
+/* Subtle glow effect around card */
+.login-card::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.4), rgba(118, 75, 162, 0.4), rgba(240, 147, 251, 0.4));
+  z-index: -1;
+  opacity: 0.6;
+  filter: blur(20px);
+}
+
+/* Professional title styling */
+h1 {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 2.75rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  position: relative;
+}
+
+/* Subtle underline accent */
+h1::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #667eea, #f093fb);
+  border-radius: 2px;
+  opacity: 0.8;
+}
+
+/* Professional subtitle */
+.subtitle {
+  font-size: 1rem;
+  color: #64748b;
+  font-weight: 500;
+  margin-bottom: 2rem;
+  letter-spacing: 0.025em;
+}
+
+/* Enhanced paragraph style */
+p {
+  font-size: 1.125rem;
+  color: #475569;
+  line-height: 1.7;
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 2rem auto;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+/* Professional button design */
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #4285f4 0%, #34a853 50%, #4285f4 100%);
+  background-size: 200% 200%;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-top: 1.5rem;
+  box-shadow: 
+    0 8px 20px rgba(66, 133, 244, 0.3),
+    0 4px 10px rgba(66, 133, 244, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.025em;
+  text-transform: none;
+}
+
+/* Button shine effect */
+.button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.6s ease;
+}
+
+.button:hover::before {
+  left: 100%;
+}
+
+.button:hover {
+  background-position: 100% 0;
+  transform: translateY(-2px);
+  box-shadow: 
+    0 12px 28px rgba(66, 133, 244, 0.4),
+    0 6px 16px rgba(66, 133, 244, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.button:active {
+  transform: translateY(0px);
+  box-shadow: 
+    0 4px 12px rgba(66, 133, 244, 0.3),
+    0 2px 6px rgba(66, 133, 244, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.button:disabled {
+  background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+  color: #94a3b8;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.button:disabled::before {
+  display: none;
+}
+
+/* Google icon styling */
+.button svg,
+.button img {
+  width: 20px;
+  height: 20px;
+  filter: brightness(1.1);
+}
+
+/* Professional loading spinner */
+.button .loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Enhanced card entrance animation */
+@keyframes cardEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+    filter: blur(10px);
   }
-  
-  /* Gradient animation for the background */
-  @keyframes gradientShift {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
+  50% {
+    opacity: 0.8;
+    transform: translateY(10px) scale(0.98);
+    filter: blur(2px);
   }
-  
-  /* Full-page gradient background */
-  .full-page-gradient {
-    background: linear-gradient(-45deg, #8E44AD, #F6D02F, #FF4C4C, #FFD700);
-    background-size: 400% 400%;
-    animation: gradientShift 15s ease infinite;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative; /* Ensure the logo can be positioned relative to the page */
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
   }
-  
-  /* Position logo at the top-left */
-  .logo {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    z-index: 10; /* Ensure logo is above other elements */
+}
+
+/* Floating elements for visual interest */
+.floating-element {
+  position: absolute;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(10px);
+  animation: float 6s ease-in-out infinite;
+}
+
+.floating-element:nth-child(1) {
+  width: 80px;
+  height: 80px;
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.floating-element:nth-child(2) {
+  width: 120px;
+  height: 120px;
+  top: 70%;
+  right: 10%;
+  animation-delay: 2s;
+}
+
+.floating-element:nth-child(3) {
+  width: 60px;
+  height: 60px;
+  bottom: 20%;
+  left: 20%;
+  animation-delay: 4s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.3;
   }
-  
-  /* Login card style */
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+    opacity: 0.6;
+  }
+}
+
+/* Responsive enhancements */
+@media (max-width: 768px) {
   .login-card {
-    width: 100%;
-    max-width: 450px;
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-    border-radius: 15px;
     padding: 2rem;
-    text-align: center;
-    animation: fadeIn 1s ease;
+    margin: 1rem;
+    border-radius: 16px;
   }
   
-  /* 3D text effect */
-  @keyframes textShadow {
-    0% {
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
-    }
-    50% {
-      text-shadow: 5px 5px 8px rgba(0, 0, 0, 0.3), 0 0 25px rgba(0, 0, 0, 0.3);
-    }
-    100% {
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
-    }
-  }
-  
-  /* Apply the 3D effect to the title */
   h1 {
-    color: #FF4C4C;
-    font-size: 3rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    animation: textShadow 3s infinite alternate;
+    font-size: 2.25rem;
   }
   
-  /* Paragraph style */
-  p {
-    font-size: 1.2rem;
-    color: #444;
-    line-height: 1.8;
-    text-align: center;
-    max-width: 800px;
-    margin: 0 auto;
-    margin-bottom: 2rem;
+  .logo {
+    top: 16px;
+    left: 16px;
+    width: 70px;
+    height: 70px;
   }
   
-  /* Button style */
+  .floating-element {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 1.5rem;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
   .button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    width: 100%;
-    padding: 1rem;
-    background-color: #4285F4;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 1rem;
+    padding: 0.875rem 1.25rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .login-card {
+    background: rgba(255, 255, 255, 1);
+    border: 2px solid #000;
   }
   
-  .button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
+  .button {
+    border: 2px solid #000;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  html, body, #root {
+    background-color: #0f172a;
   }
   
-  .button:hover {
-    background-color: #357ae8;
+  .login-card {
+    background: linear-gradient(145deg, rgba(30, 41, 59, 0.95) 0%, rgba(51, 65, 85, 0.9) 100%);
+    box-shadow: 
+      0 32px 64px rgba(0, 0, 0, 0.3),
+      0 16px 32px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
   
-  /* Fade-in effect for login card */
-  @keyframes fadeIn {
-    0% {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  p {
+    color: #cbd5e1;
   }
   
+  .subtitle {
+    color: #94a3b8;
+  }
+}
+
+/* Focus states for accessibility */
+.button:focus-visible {
+  outline: 2px solid #4285f4;
+  outline-offset: 2px;
+}
+
+/* Professional micro-interactions */
+.login-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 40px 80px rgba(0, 0, 0, 0.15),
+    0 20px 40px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
