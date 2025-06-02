@@ -40,31 +40,44 @@ const Profile = () => {
 
 
  const handleSave = async () => {
-   if (!user) return alert("You must be signed in to save your profile.");
-   const userRef = doc(db, "users", user.uid);
+  if (!user) return alert("You must be signed in to save your profile.");
+
+  const firestoreUserRef = doc(db, "users", user.uid);
+  const userCollectionRef = doc(db, "UsersCollection", user.uid);
+
+  let updatedPhotoURL = photoURL;
+
+  try {
+    if (selectedImage) {
+      const imageRef = ref(storage, `users/${user.uid}/profile.jpg`);
+      await uploadBytes(imageRef, selectedImage);
+      updatedPhotoURL = await getDownloadURL(imageRef);
+      setPhotoURL(updatedPhotoURL);
+    }
+
+    // Update the user's main profile
+    await setDoc(firestoreUserRef, {
+      displayName,
+      dietaryRestrictions,
+      currIngredients,
+      photoURL: updatedPhotoURL
+    });
+
+    // Also update fields in UsersCollection (merge keeps existing recipe data)
+    await setDoc(userCollectionRef, {
+      userImage: updatedPhotoURL,
+      dietaryRestrictions,
+      currentIngredients: currIngredients
+    }, { merge: true });
+
+    alert("Profile information saved!");
+  } catch (error) {
+    console.error("Error saving profile:", error);
+    alert("There was an error saving your profile. Please try again.");
+  }
+};
 
 
-   let updatedPhotoURL = photoURL;
-
-
-   if (selectedImage) {
-     const imageRef = ref(storage, `users/${user.uid}/profile.jpg`);
-     await uploadBytes(imageRef, selectedImage);
-     updatedPhotoURL = await getDownloadURL(imageRef);
-     setPhotoURL(updatedPhotoURL);
-   }
-
-
-   await setDoc(userRef, {
-     displayName,
-     dietaryRestrictions,
-     currIngredients,
-     photoURL: updatedPhotoURL
-   });
-
-
-   alert("Profile information saved!");
- };
 
 
  return (
