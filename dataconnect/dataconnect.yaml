@@ -1,0 +1,12 @@
+specVersion: "v1"
+serviceId: "let-them-cook"
+location: "us-west1"
+schema:
+  source: "./schema"
+  datasource:
+    postgresql:
+      database: "fdcdb"
+      cloudSql:
+        instanceId: "let-them-cook-fdc"
+      # schemaValidation: "COMPATIBLE"
+connectorDirs: ["./connector"]

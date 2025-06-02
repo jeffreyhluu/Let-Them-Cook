@@ -321,6 +321,7 @@ const Chatbot = () => {
   };
 
   const generateAndStoreImage = async (prompt, recipeID) => {
+    console.log("React OpenAI Key: " + process.env.REACT_APP_OPENAI_API_KEY);
     try {
       const response = await axios.post(
         'https://api.openai.com/v1/images/generations',
@@ -340,7 +341,9 @@ const Chatbot = () => {
 
       const b64Image = response.data.data[0].b64_json;
       const storageRef = ref(storage, `recipeImages/${recipeID}.png`);
+      console.log("Storage Ref: " + storageRef);
       await uploadString(storageRef, b64Image, 'base64');
+      console.log("Uploaded string");
       return await getDownloadURL(storageRef);
     } catch (error) {
       console.error('Failed to generate/store image:', error);
