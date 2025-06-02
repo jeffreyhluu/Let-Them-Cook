@@ -10,7 +10,9 @@ const NearestGroceryStore = ({ missingIngredients }) => {
 
   // Extract just the ingredient names for table headers
   console.log("Missing ingredients:", missingIngredients);
-  const ingredientNames = missingIngredients?.map(item => item.ingredient) || [];
+  const ingredientNames = Array.isArray(missingIngredients)
+  ? missingIngredients.map(item => item.ingredient)
+  : [];
 
   useEffect(() => {
     const confirmed = window.confirm(
@@ -125,12 +127,11 @@ const NearestGroceryStore = ({ missingIngredients }) => {
                   <td>{store.name}</td>
                   <td>{store.vicinity}</td>
                   <td>{store.rating ? store.rating : "N/A"}</td>
-                  {missingIngredients.map(({ ingredient, price, unit }) => (
-                    <td key={ingredient}>
-                      {price !== null && price !== undefined
-                        ? `$${price} / ${unit || "unit"}`
-                        : "N/A"}
-                    </td>
+                  {Array.isArray(missingIngredients) &&
+                    missingIngredients.map(({ ingredient, price, unit }) => (
+                      <td key={ingredient}>
+                        {price != null ? `$${price} / ${unit || "unit"}` : "N/A"}
+                      </td>
                   ))}
                 </tr>
               ))}

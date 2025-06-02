@@ -26,6 +26,8 @@ const Chatbot = () => {
   const [parsedRecipe, setParsedRecipe] = useState(null);
   const [matchedExistingRecipe, setMatchedExistingRecipe] = useState(null);
   const [oldIdentification, setOldIdentification] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -165,9 +167,10 @@ const Chatbot = () => {
               setMatchedExistingRecipe(null);
               setParsedRecipe(null);
             } else {
+              const formattedSavedHTML = await formatRecipeWithRealLink(matchedRecipe);
               setMessages(prev => [...prev, {
                 role: 'assistant',
-                content: `Here's a recipe I found that's very similar from another user:\n\n${matchedRecipe.recipeName}. Click "Save This Recipe" to save it on your explore page too!`,
+                content: `Here's a recipe I found that's very similar from another user:\n\n${matchedRecipe.recipeName}. Click "Save This Recipe" to save it on your explore page too!\n\n${formattedSavedHTML}`,
               }]);
               setMatchedExistingRecipe(matchedRecipe);
               setParsedRecipe(null);
@@ -496,6 +499,7 @@ const Chatbot = () => {
               color="secondary"
               onClick={async () => {
                 setLoading(true);
+                setIsSubmitting(true);
                 try {
                   const user = auth.currentUser;
                   if (!user) return alert("You must be logged in to submit a recipe.");
@@ -512,10 +516,11 @@ const Chatbot = () => {
                   alert("There was an error submitting the recipe.");
                 } finally {
                   setLoading(false);
+                  setIsSubmitting(false);
                 }
               }}
             >
-              {loading ? <CircularProgress size={24} color="inherit" /> : "Submit Recipe"}
+              {isSubmitting ? <CircularProgress size={24} color="inherit" /> : "Submit Recipe"}
             </Button>
           </>
         )}
