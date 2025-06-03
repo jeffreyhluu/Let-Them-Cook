@@ -233,6 +233,7 @@ Tracked bugs are listed in the [Issues](https://github.com/jeffreyhluu/Let-Them-
 
 * Buttons do not always work in Microsoft Edge
 * Command-Shift-R (Macbook) or CTRL-Shift-R (Windows) is sometimes needed to clear the cache after a deployment for features to work
+* OpenAI servers, very occassionally, go down for a few minutes at a time. If this occurs, the chatbot will always return that it could not fetch the recipe. To solve this problem, just wait for a few minutes, and then redeploy.
 
 
 
