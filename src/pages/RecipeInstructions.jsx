@@ -5,6 +5,7 @@ import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
 import Flag from "react-world-flags";
 import unFlag from "../assets/un-flag.png";
+import "./css/RecipeInstructions.css"; // ✅ New CSS file
 
 const cuisineToFlag = {
   Italian: "IT",
@@ -23,7 +24,6 @@ const cuisineToFlag = {
 
 const RecipeInstructions = () => {
   const { recipeID } = useParams();
-  console.log("Recipe ID: " + recipeID);
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -39,7 +39,7 @@ const RecipeInstructions = () => {
         const match = userData.recipes?.find((r) => r.recipeID === recipeID);
         if (match) {
           foundRecipe = match;
-          break; // ✅ important to exit the loop immediately
+          break;
         }
       }
 
@@ -50,45 +50,44 @@ const RecipeInstructions = () => {
     fetchRecipe();
   }, [recipeID]);
 
-  const getCuisineFlag = (cuisine) => {
-    return cuisineToFlag[cuisine] || "custom";
-  };
+  const getCuisineFlag = (cuisine) => cuisineToFlag[cuisine] || "custom";
 
-  if (loading) return <div>Loading...</div>;
-  if (!recipe) return <div>Recipe not found.</div>;
+  if (loading) return <div className="loading">Loading recipe...</div>;
+  if (!recipe) return <div className="error">Recipe not found.</div>;
 
   return (
-    <div className="recipe-instructions">
-      <h1>{recipe.recipeName}</h1>
-      <img
-        src={recipe.imageURL || "https://via.placeholder.com/300"}
-        alt={recipe.recipeName}
-        style={{ width: 300, height: 300, objectFit: "cover" }}
-      />
-      <p>
-        <strong>Cuisine:</strong> {recipe.cuisineType}
-        {getCuisineFlag(recipe.cuisineType) === "custom" ? (
-          <img
-            src={unFlag}
-            alt="UN Flag"
-            style={{ width: 20, height: 15, marginLeft: 8 }}
-          />
-        ) : (
-          <Flag
-            code={getCuisineFlag(recipe.cuisineType)}
-            style={{ width: 20, height: 15, marginLeft: 8 }}
-          />
-        )}
-      </p>
-      <p>
-        <strong>Difficulty:</strong>{" "}
-        {["Easy", "Medium", "Hard"][recipe.difficulty - 1] || "Unknown"}
-      </p>
-      <p>
-        <strong>Rating:</strong> {recipe.rating} / 5
-      </p>
-      <br></br>
-      <p style={{ whiteSpace: "pre-line" }}>{recipe.instructions}</p>
+    <div className="recipe-instructions-page">
+      <div className="recipe-header">
+        <img
+          src={recipe.imageURL || "https://via.placeholder.com/300"}
+          alt={recipe.recipeName}
+          className="recipe-image"
+        />
+        <div className="recipe-meta">
+          <h1>{recipe.recipeName}</h1>
+          <p>
+            <strong>Cuisine:</strong> {recipe.cuisineType}{" "}
+            {getCuisineFlag(recipe.cuisineType) === "custom" ? (
+              <img src={unFlag} alt="UN Flag" className="flag-icon" />
+            ) : (
+              <Flag code={getCuisineFlag(recipe.cuisineType)} className="flag-icon" />
+            )}
+          </p>
+          <p>
+            <strong>Difficulty:</strong>{" "}
+            {["Easy", "Medium", "Hard"][recipe.difficulty - 1] || "Unknown"}
+          </p>
+          <p>
+            <strong>Your Rating:</strong>{" "}
+            {recipe.rating ? `${recipe.rating.toFixed(1)} / 5 ⭐` : "Not rated yet"}
+          </p>
+        </div>
+      </div>
+
+      <div className="instructions-section">
+        <h2>Instructions</h2>
+        <p className="recipe-text">{recipe.instructions}</p>
+      </div>
     </div>
   );
 };
