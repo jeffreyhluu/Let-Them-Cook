@@ -501,7 +501,7 @@ const Chatbot = () => {
 
       <Box className="chatbot-input">
         <TextField
-          variant="outlined"
+          variant="standard"
           placeholder="Type ingredients (e.g., eggs, spinach) and get a recipe!"
           fullWidth
           inputRef={inputRef}
