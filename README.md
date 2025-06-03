@@ -2,7 +2,7 @@ Team Members: Dhruv Krishna Srinivasan, Anas Slassi, Ahmad Sorush, Jeffrey Luu, 
 
 # Let-Them-Cook
 
-Link to the Deployed Website: https://let-them-cook-1d7b3.web.app/
+Link to the Deployed Website (preferred to use Chrome and Safari): https://let-them-cook-1d7b3.web.app/
 Link to Team Status Reports: https://docs.google.com/document/d/1eTC_VSmyYSDE3__Ye2_9YM9x5vDOsuFFiBD-rr5rpxo/edit?usp=sharing
 
 Link to User Manual (for software and bug reporting): https://github.com/jeffreyhluu/Let-Them-Cook/blob/main/USER_MANUAL.md
@@ -53,7 +53,7 @@ Let-Them-Cook/
 
 Our GitHub Actions is set up to run tests automatically on push.
 
-# ***************************************** Operational User Flow *********************************************
+# Operational User Flow 
 We currently have a full user flow that works end-to-end where the user tells the chatbot what ingredients they have → the app recommends recipes → the user can save/submit recipes -> the user can access the recipes on their Explore page.
 
 Here’s what that flow looks like behind the scenes after a user logs in:

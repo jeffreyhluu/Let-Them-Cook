@@ -1,6 +1,6 @@
 # Let Them Cook — Developer Manual
 
-Link to the Deployed Website: https://let-them-cook-1d7b3.web.app/
+Link to the Deployed Website (preferred to use Chrome and Safari): https://let-them-cook-1d7b3.web.app/
 Link to the User Manual: https://github.com/jeffreyhluu/Let-Them-Cook/blob/main/USER_MANUAL.md
 
 ## Layout of Repository
@@ -33,31 +33,42 @@ Let-Them-Cook/
 └── LICENSE
 ```
 
-# ***************************************** Setup, Build, Run, and Test Instructions *********************************************
-# Make sure the followings are installed:
-#  - Node.js (v18 or higher)
-#  - npm (v9 or higher)
+# Setup, Build, Run, and Test Instructions 
+Make sure the followings are installed:
+- Node.js (v18 or higher)
+- npm (v9 or higher)
 
 ## Setup + How to Obtain Source Code
 
 This section explains the repo and Firebase setup process. Use the USER_MANUAL.md (link at the top) if you just want to use the web app at the link https://let-them-cook-1d7b3.web.app/.
 
-# 1) Clone the repo
+### 1) Clone the repo
 git clone https://github.com/jeffreyhluu/Let-Them-Cook.git
 
-# 2) Checkout the final release branch
+### 2) Checkout the final release branch
 git checkout final-release
 
-# 3) If you want to build + deploy, email the owner of the project
-Email Dhruv at sdhruvkrishna@gmail.com (with the subject line "Let Them Cook - Please Add") or message on Slack to be added to the Firebase "Let Them Cook" project with appropriate permissions.
+### 3) If you want to build + deploy, email the owner of the project
+Email Dhruv at sdhruvkrishna@gmail.com (with the subject line "Let Them Cook - Please Add") or message on Slack to be added to the Firebase "Let Them Cook" project with appropriate permissions. Accept the invite from your email account once Dhruv adds you.
 
-# 4) Install dependencies
-In your terminal, run:
+### 4) Install dependencies
+Make sure you are in the "Let Them Cook" root directory. In your terminal, run:
 ```bash
 npm install
 ```
 
-# 5) Make a .env file in your root directory
+Then cd into the functions directory and run the same command:
+```bash
+cd functions
+npm install
+```
+
+Navigate back to the root directory:
+```bash
+cd ..
+```
+
+### 5) Make a .env file in your root directory
 The format should look like this: 
 
 REACT_APP_OPENAI_API_KEY=<your key here>
@@ -72,57 +83,64 @@ Get a Google Maps API Key from the Places API: https://developers.google.com/map
 
 Get a Spoonacular API Key: https://www.postman.com/spoonacular-api/spoonacular-api/collection/rqqne3j/spoonacular-api
 
-# 6) Make a .env file in your server directory
+### 6) Make a .env file in your server directory
 The format should look like this:
 
 GOOGLE_MAPS_API_KEY=<your key here>
 
 Use the same Google Maps API Key as before.
 
-# 7) Make a .env file in your functions directory.
+### 7) Make a .env file in your functions directory.
 The format should look like this:
 
 GOOGLE_API_KEY=<your key here>
 
 Use the same Google Maps API Key as before.
 
-# 8) Go to your Google Cloud Console's API Library:
+### 8) Go to your Google Cloud Console's API Library:
 Go to: https://console.cloud.google.com/apis/library?inv=1&invt=AbzJeQ
 
 Under "Select a Project" in the top left, select the Let Them Cook project that you have been added to. Search for these 2 APIs from Google Enterprise API to make sure they are enabled, and if they are not enabled, enable them:
 - Places API
 - Geolocation API
 
-# 9) Get your Firebase CLI working
+### 9) Get your Firebase CLI working
 In your terminal, run these three commands:
 ```bash
 npm install -g firebase-tools
 firebase login
 firebase projects:list
 ```
-Make sure the projects list shows the Let Them Cook project.
+After you run the 2nd command, login with the email address that has access to "Let Them Cook." After the 3rd command, make sure the projects list shows the Let Them Cook project.
 
-# 10) Set the Google Maps API as a secret parameter
+### 10) Set the Google Maps API as a secret parameter
 In your terminal, run the command: 
 ```bash
 firebase functions:secrets:set GOOGLE_MAPS_API_KEY
 ```
 Enter your same Google Maps API key when prompted in the terminal.
 
+### 11) Set the Google Maps API in the function config
+In your terminal, run the command:
+```bash
+firebase functions:config:set google_maps_api_key="YOUR_ACTUAL_API_KEY_HERE"
+```
+and replace "YOUR_ACTUAL_API_KEY_HERE" with the same Google Maps API Key as before.
+
 ## Build
 
 Complete the "Setup" section instructions before this section. This section explains how to build and deploy new code to the web app. If you just want to run the app locally, skip below to the "Run (Locally)" section.
 
-# 1) BEFORE you deploy any changes:
+### 1) BEFORE you deploy any changes:
 Make sure you tested your changes locally (using the instructions in the "Run (Locally)" section below).
 
-# 2) Navigate back to the root directory of the "Let Them Cook" project.
+### 2) Navigate back to the root directory of the project.
 ```bash
 cd .. 
 ```
 Until you reach the root directory of the project if you are inside a subdirectory.
 
-# 3) In your terminal, run the following 2 commands to do a new build.
+### 3) In your terminal, run the following 2 commands to do a new build.
 ```bash
 rm -rf build
 npm run build
@@ -130,26 +148,26 @@ npm run build
 
 Choose 4a, 4b, or 4c depending on what code you changed.
 
-# 4a) If you only made changes to the frontend code (src directory), run:
+### 4a) If you only made changes to the frontend code (src directory), run:
 ```bash
 firebase deploy --only hosting
 ```
 This will deploy your changes quickly to the web app.
 
-# 4b) If you made changes to any code in the functions directory, run:
+### 4b) If you made changes to any code in the functions directory, run:
 ```bash
 firebase deploy --only functions
 firebase deploy --only hosting
 ```
 This will deploy your changes to the web app.
 
-# 4c) If you want to do a full deployment, run:
+### 4c) If you want to do a full deployment, run:
 ```bash
 firebase deploy
 ```
-This will deploy your changes to the web app after 5-10 minutes. It will also modify some Firebase Storage rules that you will want change. 
+This will deploy your changes to the web app after 5-10 minutes. It will also modify some Firebase Storage rules that you will want change. You will be asked a question or a few questions in the terminal, answer "Y" to all of them.
 
-Go to the Let Them Cook project in Firebase, and select the "Storage" tab on the left panel. Once you're in the Storage tab, select the "Rules" tab at the top of the page. Change the rules to:
+Go to the Let Them Cook project in Firebase, and select the "Storage" tab within the left "Build" panel. Once you're in the Storage tab, select the "Rules" tab at the top of the page. Change the rules to:
 
 rules_version = '2';
 service firebase.storage {
@@ -160,9 +178,9 @@ service firebase.storage {
   }
 }
 
-and make sure to PUBLISH the changes!
+and make sure to click "PUBLISH" for the changes to save!
 
-# 5) Open the app, clear the cache, and see your changes:
+### 5) Open the app, clear the cache, and see your changes:
 Open the app at: https://let-them-cook-1d7b3.web.app/
 
 Clear the cache by running: 
@@ -175,7 +193,7 @@ You'll see your changes in the updated app! If you run into any issues, contact 
 
 See the "Sanity Checks" section at the bottom of this manual for checks you should do.
 
-# 6) Make sure to push your changes to the repo.
+### 6) Make sure to push your changes to the repo.
 Push to the repo using the typical git add, git commit, git push, code review process (specific instructions in the "Git Etiquette" section).
 Our GitHub Actions is set up to run tests automatically on push.
 
@@ -184,18 +202,13 @@ Our GitHub Actions is set up to run tests automatically on push.
 
 Completing the "Setup" section instructions is necessary before this section. This section explains how to run "Let Them Cook" in your local host.
 
-# 1) Start a Firebase emulator to simulate the backend:
+### 1) Start a Firebase emulator to simulate the backend:
 In your terminal, run:
-```bash
-firebase emulators:start
-```
-
-OR if you just want to run the functions emulator, run:
 ```bash
 firebase emulators:start --only functions
 ```
 
-# 2) Then, start the local host with the following steps:
+### 2) Then, start the local host with the following steps:
 Keep the Firebase emulator running in one terminal, and open a separate terminal.
 In that separate terminal, run:
 ```bash
@@ -221,12 +234,12 @@ npm test
 
 Here are the steps to create a test file and make sure your tests work:
 
-# 1) Go to the src/__tests__ directory
+### 1) Go to the src/__tests__ directory
 
-# 2) Create a test file
+### 2) Create a test file
 Your file name must end with ".test.js"
 
-# 3) Create your test
+### 3) Create your test
 Use the Jest testing framework with mocks. See a test from firestoreHelpersTest.test.js as an example:
 test('getUserData returns null when document does not exist', async () => {
     getDoc.mockResolvedValueOnce({
@@ -237,7 +250,7 @@ test('getUserData returns null when document does not exist', async () => {
     expect(result).toBeNull();
 });
 
-# 4) Make sure the code passes the test
+### 4) Make sure the code passes the test
 In your terminal, run:
 ```bash
 npm test
@@ -246,28 +259,28 @@ If all tests pass, you can push your new tests to the repo (using the instructio
 
 
 ## Git Etiquette
-# 1) Separate branches
+### 1) Separate branches
 Make your code changes in a separate branch using
 ```bash
 git checkout -b <your branch name>
 ```
 
-# 2) Before you push
+### 2) Before you push
 Run the test command in your terminal:
 ```bash
 npm test
 ```
 
-# 3) How to push
+### 3) How to push
 Run the typical git add and git commit commands. Then to push, run:
 ```bash
 git push -u origin your-branch-name
 ```
 
-# 4) Open a PR
+### 4) Open a PR
 Go to the Github repo (https://github.com/jeffreyhluu/Let-Them-Cook) and open a Pull Request under the "Pull requests" tab. Wait for a few minutes for the necessary CI checks / tests to pass. Request another developer to merge your changes.
 
-# 5) After your changes are merged ...
+### 5) After your changes are merged ...
 In your VSCode setup, run these two commands to make sure your codebase is up to date.
 ```bash
 git checkout main
