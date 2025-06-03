@@ -33,11 +33,39 @@ const Profile = () => {
  }, [user]);
 
 
- const handleImageChange = (e) => {
-   if (e.target.files[0]) {
-     setSelectedImage(e.target.files[0]);
-   }
- };
+ const handleImageChange = async (e) => {
+  if (e.target.files[0]) {
+    const file = e.target.files[0];
+    setSelectedImage(file);
+
+    if (!user) {
+      alert("You must be signed in to upload a profile photo.");
+      return;
+    }
+
+    try {
+      const imageRef = ref(storage, `users/${user.uid}/profile.jpg`);
+      await uploadBytes(imageRef, file);
+      const url = await getDownloadURL(imageRef);
+
+      setPhotoURL(url);
+      setSelectedImage(null); 
+
+      // Update Firestore immediately with new photoURL
+      const firestoreUserRef = doc(db, "users", user.uid);
+      const userCollectionRef = doc(db, "UsersCollection", user.uid);
+
+      await setDoc(firestoreUserRef, { photoURL: url }, { merge: true });
+      await setDoc(userCollectionRef, { userImage: url }, { merge: true });
+
+      alert("Profile photo updated!");
+    } catch (error) {
+      console.error("Error uploading profile photo:", error);
+      alert("Failed to upload profile photo. Please try again.");
+    }
+  }
+};
+
 
 
  const handleSave = async () => {
@@ -98,12 +126,35 @@ const Profile = () => {
      </section>
 
 
-     {/* Profile Image */}
-     <section className="profile-section mt-4">
-       <h2 className="section-title">Profile Image</h2>
-       {photoURL && <img src={photoURL} alt="Profile" className="w-32 h-32 object-cover rounded-full mb-2" />}
-       <input type="file" accept="image/*" onChange={handleImageChange} />
-     </section>
+    {/* Profile Image */}
+    <section className="profile-section mt-4">
+      <h2 className="section-title">Profile Image</h2>
+
+      {/* Current Profile Image Preview */}
+      {photoURL && (
+        <img
+          src={photoURL}
+          alt="Profile"
+          className="w-32 h-32 object-cover rounded-full mb-2"
+        />
+      )}
+
+      {/* Upload New Image */}
+      <div className="mt-2">
+        <label htmlFor="fileInput" className="custom-file-label">
+          Choose a new image
+        </label>
+        <input
+          id="fileInput"
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          className="file-input-hidden"
+        />
+      </div>
+    </section>
+
+
 
 
      {/* Dietary Restrictions */}
