@@ -33,5 +33,19 @@ yarn-error.log*
 # Test coverage
 coverage/
 
-# Optional: ignore LFS large file tracking metadata
+# ignore LFS large file tracking metadata
 *.lfsconfig
+
+# Firebase and other debug logs
+firebase-debug*.log
+firestore-debug.log
+database-debug.log
+dataconnect-debug.log
+
+# Dataconnect metadata directory
+dataconnect/.dataconnect/
+
+# Optional: catch any numbered debug logs with spaces
+firebase-debug *.log
+
+
