@@ -8,7 +8,6 @@ const NearestGroceryStore = ({ missingIngredients }) => {
   const [loading, setLoading] = useState(false);
   const [zipError, setZipError] = useState("");
 
-  // Extract just the ingredient names for table headers
   console.log("Missing ingredients:", missingIngredients);
   const ingredientNames = Array.isArray(missingIngredients)
   ? missingIngredients.map(item => item.ingredient)

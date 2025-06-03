@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { auth, provider } from "../firebase"; // Adjust path as needed
+import { auth, provider } from "../firebase"; 
 import { signInWithPopup } from "firebase/auth";
 
-// Spinner component (keep if you want the spinner feature)
 const Spinner = () => (
   <div style={{
     border: "4px solid #f3f3f3",
@@ -15,7 +14,6 @@ const Spinner = () => (
   }}/>
 );
 
-// Spinner animation style (needed if using Spinner)
 const spinnerStyle = `
 @keyframes spin {
   to { transform: rotate(360deg); }
@@ -34,14 +32,13 @@ const Login = () => {
   const [error, setError] = useState("");
 
   const handleGoogleLogin = async () => {
-    console.log("Login button clicked"); // Debug log
+    console.log("Login button clicked"); 
     setLoading(true);
     setError("");
 
     try {
       const result = await signInWithPopup(auth, provider);
       console.log("Login successful:", result.user.displayName);
-      // No redirect needed here - App.jsx will handle it
     } catch (error) {
       console.error("Login error:", error);
       setError(`Login failed: ${error.message}`);

@@ -1,9 +1,7 @@
-// TestPage.jsx
 import React from 'react';
 import UserDashboard from '../Components/UserDashboard';
 
 function TestPage() {
-  // Simulated user (would normally come from Firebase Auth)
   const testUser = {
     userId: 'test-user-uuid-0001',
     name: 'Test User',

@@ -1,4 +1,3 @@
-// UserDashboard.jsx
 import React, { useEffect, useState } from 'react';
 import { getUserData, createOrUpdateUser, addRecipeToUser } from '../firestoreHelpers';
 

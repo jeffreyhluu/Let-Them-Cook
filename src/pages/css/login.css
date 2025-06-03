@@ -1,4 +1,3 @@
-/* Ensure html, body, and #root take up full height */
 html, body, #root {
   height: 100%;
   margin: 0;
@@ -10,7 +9,6 @@ html, body, #root {
   text-rendering: optimizeLegibility;
 }
 
-/* Full-page professional gradient */
 .full-page-gradient {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
   background-size: 300% 300%;
@@ -23,7 +21,6 @@ html, body, #root {
   overflow: hidden;
 }
 
-/* Subtle animated background overlay */
 .full-page-gradient::before {
   content: '';
   position: absolute;
@@ -43,7 +40,6 @@ html, body, #root {
   50% { opacity: 0.6; }
 }
 
-/* Position logo at the top-left */
 .logo {
   position: absolute;
   top: 24px;
@@ -61,7 +57,6 @@ html, body, #root {
   filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.2));
 }
 
-/* Professional login card */
 .login-card {
   width: 100%;
   max-width: 450px;
@@ -80,7 +75,6 @@ html, body, #root {
   z-index: 5;
 }
 
-/* Subtle glow effect around card */
 .login-card::before {
   content: '';
   position: absolute;
@@ -92,7 +86,6 @@ html, body, #root {
   filter: blur(20px);
 }
 
-/* Professional title styling */
 h1 {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
   -webkit-background-clip: text;
@@ -106,7 +99,6 @@ h1 {
   position: relative;
 }
 
-/* Subtle underline accent */
 h1::after {
   content: '';
   position: absolute;
@@ -120,7 +112,6 @@ h1::after {
   opacity: 0.8;
 }
 
-/* Professional subtitle */
 .subtitle {
   font-size: 1rem;
   color: #64748b;
@@ -129,7 +120,6 @@ h1::after {
   letter-spacing: 0.025em;
 }
 
-/* Enhanced paragraph style */
 p {
   font-size: 1.125rem;
   color: #475569;
@@ -141,7 +131,6 @@ p {
   letter-spacing: 0.01em;
 }
 
-/* Professional button design */
 .button {
   display: flex;
   justify-content: center;
@@ -169,7 +158,6 @@ p {
   text-transform: none;
 }
 
-/* Button shine effect */
 .button::before {
   content: '';
   position: absolute;
@@ -216,7 +204,6 @@ p {
   display: none;
 }
 
-/* Google icon styling */
 .button svg,
 .button img {
   width: 20px;
@@ -224,7 +211,6 @@ p {
   filter: brightness(1.1);
 }
 
-/* Professional loading spinner */
 .button .loading-spinner {
   width: 20px;
   height: 20px;
@@ -239,7 +225,6 @@ p {
   100% { transform: rotate(360deg); }
 }
 
-/* Enhanced card entrance animation */
 @keyframes cardEntrance {
   0% {
     opacity: 0;
@@ -258,7 +243,6 @@ p {
   }
 }
 
-/* Floating elements for visual interest */
 .floating-element {
   position: absolute;
   border-radius: 50%;
@@ -302,7 +286,6 @@ p {
   }
 }
 
-/* Responsive enhancements */
 @media (max-width: 768px) {
   .login-card {
     padding: 2rem;
@@ -341,7 +324,6 @@ p {
   }
 }
 
-/* Accessibility improvements */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -363,7 +345,6 @@ p {
   }
 }
 
-/* Dark mode support */
 @media (prefers-color-scheme: dark) {
   html, body, #root {
     background-color: #0f172a;
@@ -386,13 +367,11 @@ p {
   }
 }
 
-/* Focus states for accessibility */
 .button:focus-visible {
   outline: 2px solid #4285f4;
   outline-offset: 2px;
 }
 
-/* Professional micro-interactions */
 .login-card:hover {
   transform: translateY(-2px);
   box-shadow: 

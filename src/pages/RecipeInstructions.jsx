@@ -1,11 +1,10 @@
-// src/pages/RecipeInstructions.jsx
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
 import Flag from "react-world-flags";
 import unFlag from "../assets/un-flag.png";
-import "./css/RecipeInstructions.css"; // ✅ New CSS file
+import "./css/RecipeInstructions.css"; 
 
 const cuisineToFlag = {
   Italian: "IT",

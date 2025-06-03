@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-/* CSS Custom Properties for Design System */
 :root {
   --color-primary: #6366f1;
   --color-primary-light: #818cf8;
@@ -46,7 +45,6 @@
   --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Global Reset & Base Styling */
 *,
 *::before,
 *::after {
@@ -86,7 +84,6 @@ body::before {
   z-index: -1;
 }
 
-/* Form Container */
 form {
   max-width: 700px;
   margin: 0 auto;
@@ -140,7 +137,6 @@ form:focus-within {
     0 0 0 1px rgba(255, 255, 255, 0.4);
 }
 
-/* Typography System */
 .text-3xl {
   font-size: clamp(2rem, 4vw, 3rem);
   line-height: 1.1;
@@ -183,7 +179,6 @@ form:focus-within {
   box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
 }
 
-/* Sections */
 .profile-section {
   margin-bottom: var(--spacing-2xl);
   padding-bottom: var(--spacing-xl);
@@ -216,7 +211,6 @@ form:focus-within {
 .profile-section:nth-child(3) { animation-delay: 0.3s; }
 .profile-section:nth-child(4) { animation-delay: 0.4s; }
 
-/* Section Titles */
 .section-title {
   font-size: 1.5rem;
   font-weight: 700;
@@ -245,7 +239,6 @@ form:focus-within {
   box-shadow: 0 0 12px rgba(99, 102, 241, 0.4);
 }
 
-/* Labels */
 label,
 .label {
   display: block;
@@ -258,7 +251,6 @@ label,
   transition: color var(--transition-fast);
 }
 
-/* Form Controls */
 input,
 textarea {
   width: 100%;
@@ -313,7 +305,6 @@ textarea {
   resize: vertical;
 }
 
-/* Profile Image Styling */
 .w-32 { width: 10rem; }
 .h-32 { height: 10rem; }
 .object-cover { object-fit: cover; }
@@ -358,7 +349,6 @@ textarea {
   opacity: 0.2;
 }
 
-/* File Input */
 input[type="file"] {
   padding: var(--spacing-lg);
   border: 2px dashed var(--color-neutral-300);
@@ -384,13 +374,11 @@ input[type="file"]:hover {
     linear-gradient(145deg, rgba(99, 102, 241, 0.05) 0%, rgba(99, 102, 241, 0.1) 100%);
   transform: scale(1.02);
 }
-/* Save Button Container */
 .save-btn-container {
   text-align: center;
   margin-top: 3rem;
 }
 
-/* Save Button */
 button,
 .save-btn {
   padding: 16px 35px;
@@ -428,7 +416,6 @@ button:disabled,
   box-shadow: none;
 }
 
-/* Loading States */
 .loading {
   text-align: center;
   font-size: 1.25rem;
@@ -456,7 +443,6 @@ button:disabled,
   to { transform: rotate(360deg); }
 }
 
-/* Table Styling */
 .table-container {
   margin-top: var(--spacing-3xl);
   width: 100%;
@@ -512,7 +498,6 @@ button:disabled,
   box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   body {
     padding: var(--spacing-md);
@@ -565,7 +550,6 @@ button:disabled,
   }
 }
 
-/* Accessibility & Performance */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -592,53 +576,7 @@ button:disabled,
   }
 }
 
-/* Dark Theme */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-neutral-50: #0f172a;
-    --color-neutral-100: #1e293b;
-    --color-neutral-200: #334155;
-    --color-neutral-300: #475569;
-    --color-neutral-400: #64748b;
-    --color-neutral-500: #94a3b8;
-    --color-neutral-600: #cbd5e1;
-    --color-neutral-700: #e2e8f0;
-    --color-neutral-800: #f1f5f9;
-    --color-neutral-900: #f8fafc;
-  }
-  
-  body {
-    background: 
-      radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
-      linear-gradient(135deg, var(--color-neutral-900) 0%, var(--color-neutral-800) 100%);
-  }
-  
-  form {
-    background: 
-      linear-gradient(145deg, rgba(30, 41, 59, 0.95) 0%, rgba(51, 65, 85, 0.9) 100%);
-    border-color: rgba(71, 85, 105, 0.3);
-  }
-  
-  input,
-  textarea {
-    background: 
-      linear-gradient(145deg, rgba(51, 65, 85, 0.9) 0%, rgba(71, 85, 105, 0.8) 100%);
-    border-color: var(--color-neutral-600);
-    color: var(--color-neutral-100);
-  }
-  
-  .stores-table td {
-    background: rgba(30, 41, 59, 0.8);
-    color: var(--color-neutral-200);
-  }
-  
-  .stores-table tr:nth-child(even) td {
-    background: rgba(51, 65, 85, 0.8);
-  }
-}
 
-/* Micro-interactions and Polish */
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.8; }
@@ -648,14 +586,12 @@ button:disabled,
   animation: pulse 2s ease-in-out infinite;
 }
 
-/* Focus management for better UX */
 :focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
 
-/* Selection styling */
 ::selection {
   background: rgba(99, 102, 241, 0.2);
   color: var(--color-neutral-900);

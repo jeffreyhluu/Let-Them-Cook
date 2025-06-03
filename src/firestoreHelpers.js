@@ -1,4 +1,3 @@
-// firestoreHelpers.js
 import {
   doc,
   getDoc,
@@ -13,7 +12,6 @@ import { db } from './firebase';
 const USERS_COLLECTION = 'UsersCollection';
 const RECIPE_RATINGS_COLLECTION = 'RecipeRatingsCollection';
 
-// Get all recipes from users collection
 export async function getAllUserRecipes() {
   const usersSnapshot = await getDocs(collection(db, USERS_COLLECTION));
   const allRecipes = [];
@@ -26,7 +24,7 @@ export async function getAllUserRecipes() {
     userRecipes.forEach(recipe => {
       allRecipes.push({
         ...recipe,
-        userId // attach originating userId
+        userId 
       });
     });
   });
@@ -34,7 +32,6 @@ export async function getAllUserRecipes() {
   return allRecipes;
 }
 
-// Get all recipes from ratings collection
 export async function getAllRatedRecipes() {
   const ratingsSnapshot = await getDocs(collection(db, RECIPE_RATINGS_COLLECTION));
   const recipes = [];
@@ -47,7 +44,6 @@ export async function getAllRatedRecipes() {
   return recipes;
 }
 
-// Check if user has a recipe
 export async function userHasRecipe(userId, recipeID) {
   const userData = await getUserData(userId);
   if (!userData || !userData.recipes) return false;
@@ -78,14 +74,13 @@ export async function getUserIDByRecipeID(recipeID) {
       }
     }
 
-    return null; // Recipe not found
+    return null; 
   } catch (error) {
     console.error("Error getting user by recipe ID:", error);
     return null;
   }
 }
 
-// Copy a recipe from one user to another
 export async function copyRecipeToUser(fromUserId, toUserId, recipeID) {
   const fromUserRef = doc(db, USERS_COLLECTION, fromUserId);
   const toUserRef = doc(db, USERS_COLLECTION, toUserId);
@@ -177,7 +172,7 @@ export async function addOrInitRecipeRating(recipe) {
     await setDoc(ratingRef, {
       recipeID: recipe.recipeID,
       recipeName: recipe.recipeName || 'Untitled Recipe',
-      averageRating: null // or 0 if you prefer
+      averageRating: null 
     });
   }
 }

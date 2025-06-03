@@ -7,7 +7,7 @@ import unFlag from "../assets/un-flag.png";
 import axios from "axios";
 import { updateRecipeRatingForUser } from "../firestoreHelpers";
 import './css/Explore.css';
-import StarRating from "./StarRating"; // ✅ StarRating component
+import StarRating from "./StarRating"; 
 
 const cuisineToFlag = {
   Italian: "IT",

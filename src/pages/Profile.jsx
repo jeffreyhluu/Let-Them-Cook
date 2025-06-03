@@ -56,7 +56,6 @@ const Profile = () => {
       setPhotoURL(updatedPhotoURL);
     }
 
-    // Update the user's main profile
     await setDoc(firestoreUserRef, {
       displayName,
       dietaryRestrictions,
@@ -64,7 +63,6 @@ const Profile = () => {
       photoURL: updatedPhotoURL
     });
 
-    // Also update fields in UsersCollection (merge keeps existing recipe data)
     await setDoc(userCollectionRef, {
       userImage: updatedPhotoURL,
       dietaryRestrictions,
