@@ -32,10 +32,14 @@ If the user wants to run the app locally, setup is required.
 This section explains the repo and Firebase setup process.
 
 ### 1) Clone the repo
+```bash
 git clone https://github.com/jeffreyhluu/Let-Them-Cook.git
+```
 
 ### 2) Checkout the final release branch
+```bash
 git checkout final-release
+```
 
 ### 3) Email the owner of the project for Firebase permissions
 Email Dhruv at sdhruvkrishna@gmail.com (with the subject line "Let Them Cook - Please Add") or message on Slack to be added to the Firebase "Let Them Cook" project with appropriate permissions. Accept the invite from your email account once Dhruv adds you.

@@ -48,4 +48,8 @@ dataconnect/.dataconnect/
 # Optional: catch any numbered debug logs with spaces
 firebase-debug *.log
 
+# Caching file
+.firebase/hosting.YnVpbGQ.cache
+
+
 
