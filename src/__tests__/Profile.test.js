@@ -9,9 +9,9 @@ jest.mock("../firebase", () => ({
       uid: "12345",
       displayName: "Ahmad Test",
     },
-    db: {},       // dummy placeholder if needed
+    db: {},       
   },
-  db: {}, // dummy placeholder
+  db: {}, 
 }));
 
 // Mock Firestore functions used inside Profile

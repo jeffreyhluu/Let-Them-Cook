@@ -10,10 +10,10 @@ import Login from './pages/Login';
 import TestPage from './pages/TestPage';
 import RecipeInstructions from './pages/RecipeInstructions';
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from './firebase'; // Adjust path as needed
+import { auth } from './firebase';
 import logo from './assets/logo.png';  
 
-import './App.css'; // Assuming you have styles for nav and layout
+import './App.css'; 
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -36,7 +36,7 @@ const App = () => {
   return (
     <>
       {!user ? (
-        <Login />  // Show Login page if user is not logged in
+        <Login />  
       ) : (
         <>
           {/* Navbar */}

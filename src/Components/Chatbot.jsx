@@ -238,7 +238,7 @@ const Chatbot = () => {
 
   const handleConfirmationResponse = async (response) => {
     const answer = response.trim().toLowerCase();
-    setAwaitingConfirmation(false); // clear flag immediately
+    setAwaitingConfirmation(false); 
   
     if (answer === 'yes') {
       setMessages(prev => [...prev, {

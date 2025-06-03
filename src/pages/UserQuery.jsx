@@ -24,7 +24,6 @@ const UserQuery = () => {
 
       setResults(found);
 
-      // Update history (no duplicates, max 5)
       setHistory((prev) => {
         const updated = [query, ...prev.filter((q) => q !== query)];
         return updated.slice(0, 5);
