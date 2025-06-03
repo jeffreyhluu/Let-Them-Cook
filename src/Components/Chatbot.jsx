@@ -536,9 +536,6 @@ const Chatbot = () => {
           >
             <CloseIcon />
           </IconButton>
-          <Typography id="nearest-grocery-modal-title" variant="h6" gutterBottom>
-            Nearest Grocery Stores
-          </Typography>
           <NearestGroceryStore missingIngredients={missingIngredients} />
         </Paper>
       </Modal>
