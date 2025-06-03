@@ -196,7 +196,7 @@ Clear the cache by running:
 
 Macbook: Command-Shift-R
 
-Windows: CTRL-Shift-F5
+Windows: CTRL-Shift-R
 
 (You may need to clear the cache on the specific page where you made changes)
 
@@ -291,7 +291,7 @@ git push -u origin your-branch-name
 ```
 
 ### 4) Open a PR
-Go to the Github repo (https://github.com/jeffreyhluu/Let-Them-Cook) and open a Pull Request under the "Pull requests" tab. Wait for a few minutes for the necessary CI checks / tests to pass. Request another developer to merge your changes.
+Go to the Github repo (https://github.com/jeffreyhluu/Let-Them-Cook) and open a Pull Request under the "Pull requests" tab. Wait for a few minutes for the necessary CI checks / tests to pass. Request another developer (typically, it should not be yourself unless the change is trivial) to merge your changes. This process should occur for every push of new code.
 
 ### 5) After your changes are merged ...
 In your VSCode setup, run these two commands to make sure your codebase is up to date.
@@ -304,8 +304,8 @@ Then you can choose to delete your previous feature branch in the repo.
 
 ## Sanity Checks After Building a Release
 After building/deploying the web app, here are some sanity checks to do:
-1. Make sure Chatbot still generates recipes (make sure to clear the cache with Command-Shift-R or CTRL-Shift-F5).
-2. Make sure Nearest Grocery Store still returns the nearest grocery store (make sure to clear the cache with Command-Shift-R or CTRL-Shift-F5). 
+1. Make sure Chatbot still generates recipes (make sure to clear the cache with Command-Shift-R or CTRL-Shift-R).
+2. Make sure Nearest Grocery Store still returns the nearest grocery store (make sure to clear the cache with Command-Shift-R or CTRL-Shift-R). 
 3. Check the Explore page to make sure images for recipes are still showing up. If images disappear after a few hours, this means you forgot to change the Firebase Storage rules. Change the Firebase Storage rules as explained above:
 ```bash
 rules_version = '2';
