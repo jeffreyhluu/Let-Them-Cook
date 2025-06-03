@@ -3,9 +3,11 @@ Team Members: Dhruv Krishna Srinivasan, Anas Slassi, Ahmad Sorush, Jeffrey Luu, 
 # Let-Them-Cook
 
 Link to the Deployed Website (preferred to use Chrome and Safari): https://let-them-cook-1d7b3.web.app/
+
 Link to Team Status Reports: https://docs.google.com/document/d/1eTC_VSmyYSDE3__Ye2_9YM9x5vDOsuFFiBD-rr5rpxo/edit?usp=sharing
 
 Link to User Manual (for software and bug reporting): https://github.com/jeffreyhluu/Let-Them-Cook/blob/main/USER_MANUAL.md
+
 Link to Developer Manual (for setup, build, run, and test instructions): https://github.com/jeffreyhluu/Let-Them-Cook/blob/main/DEVELOPER_MANUAL.md
 
 ## Idea

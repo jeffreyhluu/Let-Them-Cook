@@ -1,6 +1,7 @@
 # Let Them Cook — Developer Manual
 
 Link to the Deployed Website (preferred to use Chrome and Safari): https://let-them-cook-1d7b3.web.app/
+
 Link to the User Manual: https://github.com/jeffreyhluu/Let-Them-Cook/blob/main/USER_MANUAL.md
 
 ## Layout of Repository
