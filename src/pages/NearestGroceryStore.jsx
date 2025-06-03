@@ -7,11 +7,22 @@ const NearestGroceryStore = ({ missingIngredients }) => {
   const [stores, setStores] = useState([]);
   const [loading, setLoading] = useState(false);
   const [zipError, setZipError] = useState("");
+  const [storeSearchAttempted, setStoreSearchAttempted] = useState(false);
+
 
   console.log("Missing ingredients:", missingIngredients);
   const ingredientNames = Array.isArray(missingIngredients)
-  ? missingIngredients.map(item => item.ingredient)
-  : [];
+    ? missingIngredients.map(item => item.ingredient)
+    : [];
+
+  // Get the base URL for your deployed Firebase functions
+  const getFunctionUrl = (functionName) => {
+    const projectId = process.env.REACT_APP_FIREBASE_PROJECT_ID || 'let-them-cook-1d7b3';
+    if (process.env.NODE_ENV === 'development') {
+      return `http://localhost:5001/${projectId}/us-central1/${functionName}`;
+    }
+    return `https://us-central1-${projectId}.cloudfunctions.net/${functionName}`;
+  };
 
   useEffect(() => {
     const confirmed = window.confirm(
@@ -38,10 +49,11 @@ const NearestGroceryStore = ({ missingIngredients }) => {
 
   const fetchStores = async (location) => {
     setLoading(true);
+    setStoreSearchAttempted(true);
     try {
       console.log("Fetching stores near:", location);
       const response = await fetch(
-        `http://localhost:4000/api/nearby?lat=${location.lat}&lng=${location.lng}`
+        `${getFunctionUrl('nearby')}?lat=${location.lat}&lng=${location.lng}`
       );
       const data = await response.json();
       console.log("Stores fetch response data:", data);
@@ -65,7 +77,7 @@ const NearestGroceryStore = ({ missingIngredients }) => {
     try {
       console.log("Fetching geocode for ZIP code:", zipCode);
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${zipCode}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`
+        `${getFunctionUrl('geocode')}?address=${zipCode}`
       );
       const data = await response.json();
       console.log("Geocode response data:", data);
@@ -90,10 +102,10 @@ const NearestGroceryStore = ({ missingIngredients }) => {
       <h1>Nearest Grocery Stores</h1>
       {loading && <p className="loading">Loading...</p>}
 
-      {!locationAllowed && (
+      {locationAllowed !== null && (
         <form onSubmit={handleZipSubmit}>
           <label>
-            Enter your ZIP code:
+            Enter a ZIP code to search other areas:
             <input
               type="text"
               value={zipCode}
@@ -131,7 +143,7 @@ const NearestGroceryStore = ({ missingIngredients }) => {
                       <td key={ingredient}>
                         {price != null ? `$${price} / ${unit || "unit"}` : "N/A"}
                       </td>
-                  ))}
+                    ))}
                 </tr>
               ))}
             </tbody>
@@ -139,7 +151,7 @@ const NearestGroceryStore = ({ missingIngredients }) => {
         </div>
       )}
 
-      {!loading && stores.length === 0 && locationAllowed !== null && (
+      {!loading && storeSearchAttempted && stores.length === 0 && (
         <p>No grocery stores found for this location.</p>
       )}
     </div>
