@@ -44,10 +44,14 @@ Make sure the followings are installed:
 This section explains the repo and Firebase setup process. Use the USER_MANUAL.md (link at the top) if you just want to use the web app at the link https://let-them-cook-1d7b3.web.app/.
 
 ### 1) Clone the repo
+```bash
 git clone https://github.com/jeffreyhluu/Let-Them-Cook.git
+```
 
 ### 2) Checkout the final release branch
+```bash
 git checkout final-release
+```
 
 ### 3) If you want to build + deploy, email the owner of the project
 Email Dhruv at sdhruvkrishna@gmail.com (with the subject line "Let Them Cook - Please Add") or message on Slack to be added to the Firebase "Let Them Cook" project with appropriate permissions. Accept the invite from your email account once Dhruv adds you.
