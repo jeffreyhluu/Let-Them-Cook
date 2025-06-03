@@ -71,10 +71,12 @@ cd ..
 ### 5) Make a .env file in your root directory
 The format should look like this: 
 
+```bash
 REACT_APP_OPENAI_API_KEY=<your key here>
 REACT_APP_GOOGLE_MAPS_API_KEY=<your key here>
 REACT_APP_SPOONACULAR_API_KEY=<your key here>
 REACT_APP_FIREBASE_PROJECT_ID=let-them-cook-1d7b3
+```
 
 Get an OpenAI API Key: https://platform.openai.com/api-keys
 
@@ -86,14 +88,18 @@ Get a Spoonacular API Key: https://www.postman.com/spoonacular-api/spoonacular-a
 ### 6) Make a .env file in your server directory
 The format should look like this:
 
+```bash
 GOOGLE_MAPS_API_KEY=<your key here>
+```
 
 Use the same Google Maps API Key as before.
 
 ### 7) Make a .env file in your functions directory.
 The format should look like this:
 
+```bash
 GOOGLE_API_KEY=<your key here>
+```
 
 Use the same Google Maps API Key as before.
 
@@ -169,6 +175,7 @@ This will deploy your changes to the web app after 5-10 minutes. It will also mo
 
 Go to the Let Them Cook project in Firebase, and select the "Storage" tab within the left "Build" panel. Once you're in the Storage tab, select the "Rules" tab at the top of the page. Change the rules to:
 
+```bash
 rules_version = '2';
 service firebase.storage {
     match /b/{bucket}/o {
@@ -177,6 +184,7 @@ service firebase.storage {
     }
   }
 }
+```
 
 and make sure to click "PUBLISH" for the changes to save!
 
@@ -184,8 +192,10 @@ and make sure to click "PUBLISH" for the changes to save!
 Open the app at: https://let-them-cook-1d7b3.web.app/
 
 Clear the cache by running: 
+
 Macbook: Command-Shift-R
-Window: CTRL-Shift-F5
+
+Windows: CTRL-Shift-F5
 
 (You may need to clear the cache on the specific page where you made changes)
 
@@ -241,6 +251,7 @@ Your file name must end with ".test.js"
 
 ### 3) Create your test
 Use the Jest testing framework with mocks. See a test from firestoreHelpersTest.test.js as an example:
+```bash
 test('getUserData returns null when document does not exist', async () => {
     getDoc.mockResolvedValueOnce({
       exists: () => false
@@ -249,6 +260,7 @@ test('getUserData returns null when document does not exist', async () => {
     const result = await getUserData('123');
     expect(result).toBeNull();
 });
+```
 
 ### 4) Make sure the code passes the test
 In your terminal, run:
@@ -294,6 +306,7 @@ After building/deploying the web app, here are some sanity checks to do:
 1. Make sure Chatbot still generates recipes (make sure to clear the cache with Command-Shift-R or CTRL-Shift-F5).
 2. Make sure Nearest Grocery Store still returns the nearest grocery store (make sure to clear the cache with Command-Shift-R or CTRL-Shift-F5). 
 3. Check the Explore page to make sure images for recipes are still showing up. If images disappear after a few hours, this means you forgot to change the Firebase Storage rules. Change the Firebase Storage rules as explained above:
+```bash
 rules_version = '2';
 service firebase.storage {
     match /b/{bucket}/o {
@@ -302,6 +315,7 @@ service firebase.storage {
     }
   }
 }
+```
 
 
 
