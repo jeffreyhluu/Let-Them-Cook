@@ -518,7 +518,7 @@ const Chatbot = () => {
         onClick={() => setModalOpen(true)}
         style={{ margin: '10px 0' }}
       >
-        Find Nearest Grocery Stores
+        Find Stores & Ingredient Prices
       </Button>
 
       <Modal
